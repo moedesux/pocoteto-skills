@@ -52,5 +52,6 @@ done
 
 echo "Installed $(ls -d "$here"/skills/*/ | wc -l | tr -d ' ') skills into $skills_dir"
 [ -d "$backup" ] && echo "Previous copies moved to $backup"
+[ -n "${POCOTETO_QUIET_NEXT:-}" ] && exit 0
 echo "Next, in each repo: /setup-matt-pocock-skills, /pstack:setup-pstack, /pstack:create-verification-skill,"
 echo "then paste AGENTS-snippet.md into CLAUDE.md. Run /flow to start."

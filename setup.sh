@@ -30,7 +30,7 @@ fi
 echo "pocoteto: setting up $target"
 
 # 1. Skills, project scope.
-bash "$here/install.sh" --project "$target"
+POCOTETO_QUIET_NEXT=1 bash "$here/install.sh" --project "$target"
 
 # 2. Ask Claude Code to install pstack for this repo. Claude Code reads these keys
 #    and offers to install the plugin when the repo is trusted.
