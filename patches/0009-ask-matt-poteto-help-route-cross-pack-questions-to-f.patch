@@ -1,0 +1,25 @@
+From f8fc1dbb589722ac3d61264097ac50a3e1a9ae1a Mon Sep 17 00:00:00 2001
+From: pocoteto <p@x>
+Date: Wed, 14 Oct 2026 04:01:08 +0200
+Subject: [PATCH 09/12] ask-matt, poteto-help: route cross-pack questions to
+ /flow
+
+---
+ skills/ask-matt/SKILL.md    | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/skills/ask-matt/SKILL.md b/skills/ask-matt/SKILL.md
+index 4bfeeb6..d617be6 100644
+--- a/skills/ask-matt/SKILL.md
++++ b/skills/ask-matt/SKILL.md
+@@ -8,6 +8,8 @@ disable-model-invocation: true
+ 
+ You don't remember every skill, so ask.
+ 
++This repo also has pstack installed. For a question that spans both packs (building, verifying, or merging what these skills planned), route to `/flow` instead.
++
+ Before stating what a skill does or recommending a step be skipped, read that skill's SKILL.md: the summaries here are for orientation only.
+ 
+ A **flow** is a path through the skills. Most paths run along one **main flow**, and two **on-ramps** merge onto it. Everything else is standalone, or a vocabulary layer that runs underneath.
+-- 
+2.43.0

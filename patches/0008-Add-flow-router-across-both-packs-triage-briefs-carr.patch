@@ -1,0 +1,106 @@
+From 711bf383691746220c16ab3d80f2146bfb7f1238 Mon Sep 17 00:00:00 2001
+From: pocoteto <p@x>
+Date: Wed, 14 Oct 2026 04:01:03 +0200
+Subject: [PATCH 08/12] Add /flow router across both packs; triage briefs carry
+ a Proof line
+
+---
+ skills/flow/SKILL.md         | 58 ++++++++++++++++++++++++++++++++++++
+ skills/triage/AGENT-BRIEF.md |  9 ++++++
+ 2 files changed, 67 insertions(+)
+ create mode 100644 skills/flow/SKILL.md
+
+diff --git a/skills/flow/SKILL.md b/skills/flow/SKILL.md
+new file mode 100644
+index 0000000..96e23a6
+--- /dev/null
++++ b/skills/flow/SKILL.md
+@@ -0,0 +1,58 @@
++---
++name: flow
++description: Router for the combined Matt Pocock skills + pstack setup. Says which command runs each stage from idea to merged PR, and what each stage hands the next. Use for /flow, or "which skill now?" when both packs are installed.
++disable-model-invocation: true
++argument-hint: "Where are you? (an idea, a spec, a ticket, a bug, a PR, a finished session)"
++---
++
++# Flow
++
++Two packs, one pipeline. Matt's skills own **alignment**: what to build, in whose words, cut into tickets. pstack owns **execution**: building it, proving it on the real surface, getting it merged. The seam between them is the ticket and its **Proof** line.
++
++Find where the user is in the table, answer with the next command to type, and stop. Don't start the work. Before you describe a skill in detail, read its SKILL.md: this table is orientation only.
++
++## The main flow
++
++| Stage | Command | Hands the next stage |
++| --- | --- | --- |
++| 0. Once per repo | `/setup-matt-pocock-skills`, `/setup-pstack`, `/create-verification-skill` | Tracker and doc locations, model roles, a project `verify` skill |
++| 1. Align | `/grill-with-docs` (or `/grill-me` for non-code) | Decisions in the conversation, `GLOSSARY.md` terms, ADRs |
++| 1b. Too big for one session | `/wayfinder` | A map of decision tickets, resolved one at a time, then back to stage 2 |
++| 1c. Can't settle it on paper | `/poteto-mode prototype <question>` | A decision plus a throwaway on a `prototype/<name>` branch |
++| 2. Spec | `/to-spec` | A spec on the tracker |
++| 3. Tickets | `/to-tickets` | Vertical-slice tickets with blocking edges and a **Proof** line each |
++| 4. Build one ticket | `/poteto-mode implement #<n>` | A verified diff, Proof evidence, small ordered commits, an open PR |
++| 4b. Build the whole spec | `/implement-spec` (parallel, one integration branch) or `/poteto-mode autopilot-stack` | Same, across the task graph |
++| 5. Review | Runs inside stage 4: `code-review` (Spec and Standards axes), then `interrogate` (multi-model attack) | Findings fixed or dismissed with a reason |
++| 6. Merge | `/poteto-mode babysit <pr>`, then `/poteto-mode ship the stack` | Merged PRs |
++| 7. Learn | `/retro`, then the command it names: `/correct` (make the mistake impossible), `/reflect` (edit a skill), `/improve-codebase-architecture` | Checks in CI, `CODING_STANDARDS.md` rows, skill edits |
++
++Use `/poteto-mode` for stage 4 when you want its playbooks, delegation, and PR flow. Use `/implement` when you want a lighter single-agent build in the current branch. Both now close out with the Proof check, `code-review`, and `interrogate`.
++
++## On-ramps that skip alignment
++
++The intent is already clear in these cases, so start at `/poteto-mode` directly.
++
++- **A bug.** `/poteto-mode <symptom>. repro first, then fix and verify.` The Bug fix playbook reproduces, root-causes, and lands the failing test before the fix. Outside poteto-mode, `/diagnosing-bugs` is the lighter loop.
++- **Slowness.** `/poteto-mode <what's slow>`. Perf issue or Hillclimb playbook, with `/benchmark-checklist` on every number.
++- **A PR that needs attention.** `/poteto-mode check on pr <n>`.
++- **An incoming issue.** `/triage` first. It categorises the issue, grills when needed, and writes an agent brief with a Proof line. Hand that brief to `/poteto-mode`.
++
++## Understanding code
++
++- How it works now: `/how`. Why it was built this way: `/why`. Both, explained plainly: `/explain`.
++- External docs or APIs: the `research` skill, run in the background.
++- Learn a topic over several sessions: `/teach`.
++- A reply didn't land: `/wait-what` (uses your glossary) or `/bro` (plain words).
++
++## Sessions
++
++- Stop now, resume later in a fresh agent: `/handoff` writes the document. Inside poteto-mode, say "pause safely" and its Pause playbook leaves the branch resumable.
++- Pick up someone else's work: `/poteto-mode pick up <branch or transcript>`.
++- Catch up on a long chat: `/ketchup`.
++
++## Rules of thumb
++
++- If you can't state the Proof for a change, you are still in alignment. Go back to stage 1.
++- Alignment asks questions. Execution doesn't. Grilling skills interview you by design. Inside `/poteto-mode`, the agent decides reversible calls and reports them.
++- Name things with `GLOSSARY.md`. When the agent reports a missing term, that is the next `/grill-with-docs` topic.
+diff --git a/skills/triage/AGENT-BRIEF.md b/skills/triage/AGENT-BRIEF.md
+index 1462fcd..ee08b56 100644
+--- a/skills/triage/AGENT-BRIEF.md
++++ b/skills/triage/AGENT-BRIEF.md
+@@ -32,6 +32,13 @@ The agent needs to know when it's done. Every agent brief must have concrete, te
+ - **Good:** "Running `gh issue list --label needs-triage` returns issues that have been through initial classification"
+ - **Bad:** "Triage should work correctly"
+ 
++### A Proof line
++
++Name the surface an agent drives to show the work is done on the real artifact, and the result it should observe. Acceptance criteria say what must be true. The Proof says how to see it. For a bug, the Proof is usually the reproduction from the report, now behaving correctly.
++
++- **Good:** "Run `skills list` against the fixture repo with a 2,000-char description and see it end in `...` at 1,024 chars."
++- **Bad:** "Unit tests pass."
++
+ ### Explicit scope boundaries
+ 
+ State what is out of scope. This prevents the agent from gold-plating or making assumptions about adjacent features.
+@@ -62,6 +69,8 @@ Be specific about edge cases and error conditions.
+ - [ ] Specific, testable criterion 2
+ - [ ] Specific, testable criterion 3
+ 
++**Proof:** the surface to drive and the result to observe
++
+ **Out of scope:**
+ - Thing that should NOT be changed or addressed in this issue
+ - Adjacent feature that might seem related but is separate
+-- 
+2.43.0
+

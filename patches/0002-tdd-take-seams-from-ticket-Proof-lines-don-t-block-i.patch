@@ -1,0 +1,39 @@
+From 8c3388ed80db6ebd6843f64e0c0d97f984ce79c2 Mon Sep 17 00:00:00 2001
+From: pocoteto <p@x>
+Date: Wed, 14 Oct 2026 03:59:00 +0200
+Subject: [PATCH 02/12] tdd: take seams from ticket Proof lines, don't block
+ inside poteto-mode; absorb pstack tdd's impractical-test escape and evidence
+ report
+
+---
+ skills/tdd/SKILL.md | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/skills/tdd/SKILL.md b/skills/tdd/SKILL.md
+index 01eadaa..1f42b79 100644
+--- a/skills/tdd/SKILL.md
++++ b/skills/tdd/SKILL.md
+@@ -23,6 +23,8 @@ A **seam** is the public boundary you test at: the interface where you observe b
+ 
+ Ask: "What's the public interface, and which seams should we test?" Give each proposed seam a one-line note on what it catches and what it misses.
+ 
++Pre-agreed seams can come from an earlier agreement instead of a fresh question. If the ticket or spec you are implementing has a **Proof** line (see `to-tickets`) or names its seams, those are the agreed seams. Inside `/poteto-mode`, or when the user has stepped away, don't stop to ask: pick the seams, list them with their catches/misses notes in your report, and let the user course-correct.
++
+ When the shape of that interface is itself in question (how deep the module is, where the seam belongs, what the interface should expose), call the Skill tool with "codebase-design" for the vocabulary. It is the shared source of the module, interface, depth, seam, adapter, leverage and locality terms, and it is a reference to consult, not a session to run.
+ 
+ ## Anti-patterns
+@@ -36,3 +38,11 @@ When the shape of that interface is itself in question (how deep the module is,
+ - **Red before green.** Write the failing test first, then only enough code to pass it. Don't anticipate future tests or add speculative features.
+ - **One slice at a time.** One seam, one test, one minimal implementation per cycle.
+ - **Refactoring is not part of the loop.** It belongs to the review stage (see the `code-review` skill), not the red → green implementation cycle.
++
++## When a failing test is impractical
++
++Prefer no new test over a bad test. If the only available test would need broad harness setup, brittle mocks, production-only state, or would be deleted right after proving the fix, skip it and use the closest executable check instead: a targeted script, a reproduction command, browser automation, or a log assertion. Say which one you used and why.
++
++## Report the evidence
++
++Name the test (or check) that went red, the failure it produced, and the run where it went green. If you couldn't show red-before-green, say why and what you ran instead.
+-- 
+2.43.0
+
