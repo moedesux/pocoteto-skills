@@ -1,0 +1,70 @@
+From 678372056ea1c4d707700e353b3cf46f09d9fa35 Mon Sep 17 00:00:00 2001
+From: pocoteto <pocoteto@localhost>
+Date: Wed, 14 Oct 2026 12:55:14 +0000
+Subject: [PATCH] pstack as a plugin: /flow uses the pstack: prefix, /explain
+ becomes /pstack:teach, implement and implement-spec find pstack skill files
+ in the plugin folder
+
+---
+ skills/flow/SKILL.md           | 6 ++++--
+ skills/implement-spec/SKILL.md | 2 +-
+ skills/implement/SKILL.md      | 4 ++--
+ 3 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/skills/flow/SKILL.md b/skills/flow/SKILL.md
+index bd19d6a..0365db8 100644
+--- a/skills/flow/SKILL.md
++++ b/skills/flow/SKILL.md
+@@ -11,6 +11,8 @@ Two packs, one pipeline. Matt's skills own **alignment**: what to build, in whos
+ 
+ Find where the user is in the table, answer with the next command to type, and stop. Don't start the work. Before you describe a skill in detail, read its SKILL.md: this table is orientation only.
+ 
++pstack is installed as the pstack-claude plugin, so its commands carry the plugin's prefix: `/poteto-mode` below is typed `/pstack:poteto-mode`, and the same for `/how`, `/why`, `/ketchup`, `/correct`, `/reflect`, `/setup-pstack`, `/create-verification-skill` and `/benchmark-checklist`. Matt's commands have no prefix.
++
+ ## The main flow
+ 
+ | Stage | Command | Hands the next stage |
+@@ -40,9 +42,9 @@ The intent is already clear in these cases, so start at `/poteto-mode` directly.
+ 
+ ## Understanding code
+ 
+-- How it works now: `/how`. Why it was built this way: `/why`. Both, explained plainly: `/explain`.
++- How it works now: `/how`. Why it was built this way: `/why`. A one-off plain explanation of some code: `/pstack:teach`.
+ - External docs or APIs: the `research` skill, run in the background.
+-- Learn a topic over several sessions: `/teach`.
++- Learn a topic over several sessions: `/teach` (Matt's).
+ - A reply didn't land: `/wait-what` (uses your glossary) or `/bro` (plain words).
+ 
+ ## Sessions
+diff --git a/skills/implement-spec/SKILL.md b/skills/implement-spec/SKILL.md
+index a75ff95..88d0881 100644
+--- a/skills/implement-spec/SKILL.md
++++ b/skills/implement-spec/SKILL.md
+@@ -40,7 +40,7 @@ Communication to and from subagents should be sparse. Communicate primarily thro
+ 
+ 7. Once all tickets are complete, review the integration branch two ways, in parallel:
+    - call the Skill tool with `code-review` (Standards and Spec axes);
+-   - read the `interrogate` skill's SKILL.md and follow it over the same diff (it is user-invoked, so open its file rather than calling the Skill tool). Use the spec as the intent in its Step 2.
++   - read the `interrogate` skill's SKILL.md and follow it over the same diff (it is user-invoked, so open its file rather than calling the Skill tool; pstack is a plugin here, so the file lives in the plugin's folder: `find ~/.claude/plugins -path '*/skills/interrogate/SKILL.md'`). Use the spec as the intent in its Step 2.
+ 
+    Fix the findings you agree with in a single **implementer subagent**, and dismiss the rest with a one-line reason each. Then re-run every ticket's Proof against the integration branch tip, since merges can break a ticket that passed in its own worktree.
+ 
+diff --git a/skills/implement/SKILL.md b/skills/implement/SKILL.md
+index f9e1f6d..07760a7 100644
+--- a/skills/implement/SKILL.md
++++ b/skills/implement/SKILL.md
+@@ -18,9 +18,9 @@ Run typechecking regularly, single test files regularly, and the full test suite
+ 
+ Run these in order. Each catches something the others miss.
+ 
+-1. **Prove it works.** Read the `principle-prove-it-works` skill's SKILL.md and follow it. Drive the surface the ticket's Proof line names and observe the result it names. Then re-run the Proof of every ticket already closed, per WORKING-A-TICKET.md rule 5. If the ticket has no Proof line, pick the surface a user of this change would touch. Green tests are not this step. If a project-local `verify` skill exists (made by `/create-verification-skill`), use it.
++1. **Prove it works.** Read the `principle-prove-it-works` skill's SKILL.md and follow it. pstack is a plugin here, so the file lives in the plugin's folder: `find ~/.claude/plugins -path '*/skills/principle-prove-it-works/SKILL.md'`. Drive the surface the ticket's Proof line names and observe the result it names. Then re-run the Proof of every ticket already closed, per WORKING-A-TICKET.md rule 5. If the ticket has no Proof line, pick the surface a user of this change would touch. Green tests are not this step. If a project-local `verify` skill exists (made by `/create-verification-skill`), use it.
+ 2. **Spec and standards.** Call the Skill tool with "code-review" to review the work. Its Spec axis checks you built what the ticket asked for.
+-3. **Adversarial review.** Read the `interrogate` skill's SKILL.md and follow it over the same diff. It is user-invoked, so open its file rather than calling the Skill tool. Use the ticket or spec as the intent in its Step 2 instead of asking the user. Skip this step only for trivial diffs (copy, config, one-line fixes) and say you skipped it.
++3. **Adversarial review.** Read the `interrogate` skill's SKILL.md and follow it over the same diff. It is user-invoked, so open its file rather than calling the Skill tool. pstack is a plugin here, so the file lives in the plugin's folder: `find ~/.claude/plugins -path '*/skills/interrogate/SKILL.md'`. Use the ticket or spec as the intent in its Step 2 instead of asking the user. Skip this step only for trivial diffs (copy, config, one-line fixes) and say you skipped it.
+ 4. Fix what steps 2 and 3 raise that you agree with. Dismiss the rest with a one-line reason each.
+ 
+ Commit your work to the current branch. In your report, show the Proof evidence (the command and its output, or what you observed on screen), then the review findings and what you did with each.
+-- 
+2.43.0
+

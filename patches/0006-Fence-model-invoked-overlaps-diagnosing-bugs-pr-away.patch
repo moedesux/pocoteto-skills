@@ -1,0 +1,58 @@
+From 880a1df9851386f908262b1c763f6da6e123cc7b Mon Sep 17 00:00:00 2001
+From: pocoteto <p@x>
+Date: Wed, 14 Oct 2026 04:00:18 +0200
+Subject: [PATCH 06/12] Fence model-invoked overlaps (diagnosing-bugs, pr) away
+ from poteto-mode playbooks; retro hands findings to /correct, /reflect,
+ architecture and glossary skills
+
+---
+ skills/diagnosing-bugs/SKILL.md | 2 +-
+ skills/pr/SKILL.md              | 2 +-
+ skills/retro/SKILL.md           | 7 +++++++
+ 3 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/skills/diagnosing-bugs/SKILL.md b/skills/diagnosing-bugs/SKILL.md
+index d039541..2605fd1 100644
+--- a/skills/diagnosing-bugs/SKILL.md
++++ b/skills/diagnosing-bugs/SKILL.md
+@@ -1,6 +1,6 @@
+ ---
+ name: diagnosing-bugs
+-description: Diagnosis loop for hard bugs and performance regressions. Use when the user says "diagnose"/"debug this", or reports something broken/throwing/failing/slow.
++description: Diagnosis loop for hard bugs and performance regressions. Use when the user says "diagnose"/"debug this", or reports something broken/throwing/failing/slow. Not inside /poteto-mode, whose Bug fix and Perf issue playbooks own that work.
+ ---
+ 
+ # Diagnosing Bugs
+diff --git a/skills/pr/SKILL.md b/skills/pr/SKILL.md
+index 84dd4fb..3f6f3c2 100644
+--- a/skills/pr/SKILL.md
++++ b/skills/pr/SKILL.md
+@@ -1,6 +1,6 @@
+ ---
+ name: pr
+-description: "Use when writing a PR body."
++description: "Use when writing a PR body outside /poteto-mode. Inside poteto-mode, its Opening a PR playbook owns the body and already carries this skill's door call and Summary visual."
+ metadata:
+   credits:
+     skill: show-me
+diff --git a/skills/retro/SKILL.md b/skills/retro/SKILL.md
+index 12149ac..7b457b5 100644
+--- a/skills/retro/SKILL.md
++++ b/skills/retro/SKILL.md
+@@ -24,6 +24,13 @@ The user has asked for a **retrospective**. You are suggesting improvements to t
+ 
+ 4. Present these candidates to the user, in order of severity.
+ 
++5. Hand off the fixes. This skill finds the candidates. It doesn't build them. End with the next command for each kind, so the user can run it:
++
++   - **Mechanical** mistakes the agent repeated (a check, a type, a lint rule would stop them) → `/correct`. It fixes each class at the highest level that works and proves the check fails on the real past mistake. Name the classes you found so it can start from them.
++   - A skill's instructions sent the agent the wrong way, or a long run taught a recipe worth keeping → `/reflect`, which turns the lesson into a skill edit.
++   - The root problem is a missing seam or a shallow module → `/improve-codebase-architecture`.
++   - The agent misunderstood a domain term → `/grill-with-docs` to fix `GLOSSARY.md`.
++
+ ## Reference
+ 
+ ### Implementation vs Review
+-- 
+2.43.0
+

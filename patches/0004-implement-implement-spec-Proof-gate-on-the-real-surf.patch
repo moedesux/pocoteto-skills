@@ -1,0 +1,65 @@
+From 9bb9956526b8e0321b49f362ec5956576a91f168 Mon Sep 17 00:00:00 2001
+From: pocoteto <p@x>
+Date: Wed, 14 Oct 2026 03:59:26 +0200
+Subject: [PATCH 04/12] implement, implement-spec: Proof gate on the real
+ surface, then code-review plus interrogate at close-out
+
+---
+ skills/implement-spec/SKILL.md |  7 ++++++-
+ skills/implement/SKILL.md      | 13 ++++++++++---
+ 2 files changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/skills/implement-spec/SKILL.md b/skills/implement-spec/SKILL.md
+index 1839237..f93d965 100644
+--- a/skills/implement-spec/SKILL.md
++++ b/skills/implement-spec/SKILL.md
+@@ -27,13 +27,18 @@ Communication to and from subagents should be sparse. Communicate primarily thro
+ 4. Use **implementer subagents** to implement each ticket, each in its own worktree on its own branch. Each implementer subagent:
+    - confirms its worktree is based on the integration branch before starting, and resets onto it if not;
+    - calls the Skill tool with `tdd` to build the ticket;
++   - proves the ticket works by driving the surface its **Proof** line names and observing the result it names (read the `principle-prove-it-works` skill's SKILL.md), and puts that evidence in its report. Green tests alone are not a Proof;
+    - merges the integration branch tip into its own branch before reporting done
+ 
+ 5. Once an **implementer subagent** completes, merge its work to the integration branch with a **merger subagent**.
+ 
+ 6. If this changes the **frontier** of available tickets, kick off more **implementer subagents** to work on the new tickets. This allows for maximum concurrency.
+ 
+-7. Once all tickets are complete, call the Skill tool with `code-review` on the integration branch. Fix all issues raised by the code review in a single **implementer subagent**.
++7. Once all tickets are complete, review the integration branch two ways, in parallel:
++   - call the Skill tool with `code-review` (Standards and Spec axes);
++   - read the `interrogate` skill's SKILL.md and follow it over the same diff (it is user-invoked, so open its file rather than calling the Skill tool). Use the spec as the intent in its Step 2.
++
++   Fix the findings you agree with in a single **implementer subagent**, and dismiss the rest with a one-line reason each. Then re-run every ticket's Proof against the integration branch tip, since merges can break a ticket that passed in its own worktree.
+ 
+ 8. If a draft PR exists, mark it ready for review. Otherwise, resolve each ticket the way the issue tracker closes work, and report the integration branch.
+ 
+diff --git a/skills/implement/SKILL.md b/skills/implement/SKILL.md
+index bd49e47..646b80d 100644
+--- a/skills/implement/SKILL.md
++++ b/skills/implement/SKILL.md
+@@ -6,12 +6,19 @@ disable-model-invocation: true
+ 
+ Implement the work described by the user in the spec or tickets.
+ 
+-If the user passes a ticket reference, fetch it from the issue tracker and state its title before starting. If the reference is ambiguous, ask.
++If the user passes a ticket reference, fetch it from the issue tracker and state its title before starting. If the reference is ambiguous, ask. Note the ticket's **Proof** line: it is the definition of done for close-out step 1.
+ 
+ Call the Skill tool with "tdd" where possible, at pre-agreed seams.
+ 
+ Run typechecking regularly, single test files regularly, and the full test suite once at the end.
+ 
+-Once done, call the Skill tool with "code-review" to review the work.
++## Close-out
+ 
+-Commit your work to the current branch.
++Run these in order. Each catches something the others miss.
++
++1. **Prove it works.** Read the `principle-prove-it-works` skill's SKILL.md and follow it. Drive the surface the ticket's Proof line names and observe the result it names. If the ticket has no Proof line, pick the surface a user of this change would touch. Green tests are not this step. If a project-local `verify` skill exists (made by `/create-verification-skill`), use it.
++2. **Spec and standards.** Call the Skill tool with "code-review" to review the work. Its Spec axis checks you built what the ticket asked for.
++3. **Adversarial review.** Read the `interrogate` skill's SKILL.md and follow it over the same diff. It is user-invoked, so open its file rather than calling the Skill tool. Use the ticket or spec as the intent in its Step 2 instead of asking the user. Skip this step only for trivial diffs (copy, config, one-line fixes) and say you skipped it.
++4. Fix what steps 2 and 3 raise that you agree with. Dismiss the rest with a one-line reason each.
++
++Commit your work to the current branch. In your report, show the Proof evidence (the command and its output, or what you observed on screen), then the review findings and what you did with each.
+-- 
+2.43.0
+

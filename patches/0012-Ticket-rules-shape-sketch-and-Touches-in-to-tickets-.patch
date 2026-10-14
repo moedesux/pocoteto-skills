@@ -1,0 +1,198 @@
+From 949d8482aad56370f2d7a10a48e85c55dfaf36c2 Mon Sep 17 00:00:00 2001
+From: pocoteto <p@x>
+Date: Wed, 14 Oct 2026 12:45:26 +0200
+Subject: [PATCH 12/12] Ticket rules: shape sketch and Touches in to-tickets;
+ WORKING-A-TICKET gate, ownership, spec-first new behaviour, contradiction
+ stop, regression re-run, shared-seam serialization in implement and
+ implement-spec
+
+---
+ skills/flow/SKILL.md                  |  2 +-
+ skills/implement-spec/SKILL.md        |  8 ++++--
+ skills/implement/SKILL.md             |  4 ++-
+ skills/to-tickets/SKILL.md            | 16 +++++++++--
+ skills/to-tickets/WORKING-A-TICKET.md | 40 +++++++++++++++++++++++++++
+ 5 files changed, 64 insertions(+), 6 deletions(-)
+ create mode 100644 skills/to-tickets/WORKING-A-TICKET.md
+
+diff --git a/skills/flow/SKILL.md b/skills/flow/SKILL.md
+index 96e23a6..bd19d6a 100644
+--- a/skills/flow/SKILL.md
++++ b/skills/flow/SKILL.md
+@@ -20,7 +20,7 @@ Find where the user is in the table, answer with the next command to type, and s
+ | 1b. Too big for one session | `/wayfinder` | A map of decision tickets, resolved one at a time, then back to stage 2 |
+ | 1c. Can't settle it on paper | `/poteto-mode prototype <question>` | A decision plus a throwaway on a `prototype/<name>` branch |
+ | 2. Spec | `/to-spec` | A spec on the tracker |
+-| 3. Tickets | `/to-tickets` | Vertical-slice tickets with blocking edges and a **Proof** line each |
++| 3. Tickets | `/to-tickets` | A shape sketch, then vertical-slice tickets cut along its seams, each with blocking edges, a **Proof** line, and a **Touches** line |
+ | 4. Build one ticket | `/poteto-mode implement #<n>` | A verified diff, Proof evidence, small ordered commits, an open PR |
+ | 4b. Build the whole spec | `/implement-spec` (parallel, one integration branch) or `/poteto-mode autopilot-stack` | Same, across the task graph |
+ | 5. Review | Runs inside stage 4: `code-review` (Spec and Standards axes), then `interrogate` (multi-model attack) | Findings fixed or dismissed with a reason |
+diff --git a/skills/implement-spec/SKILL.md b/skills/implement-spec/SKILL.md
+index f93d965..a75ff95 100644
+--- a/skills/implement-spec/SKILL.md
++++ b/skills/implement-spec/SKILL.md
+@@ -12,6 +12,8 @@ The goal is the entire spec implemented on a single **integration branch**, with
+ 
+ The tickets are not a list of steps. They are a **task graph** with blocking relationships between them. This means there is always a **frontier** of tickets which are ready to be grabbed.
+ 
++Two tickets whose **Touches** lines name the same seam also block each other: the lower-numbered one goes first. Every implementer follows the `to-tickets` skill's [WORKING-A-TICKET.md](../to-tickets/WORKING-A-TICKET.md).
++
+ Communication to and from subagents should be sparse. Communicate primarily through **context pointers**: to the spec, tickets, research notes, and previous commits. Don't duplicate information already available via pointers.
+ 
+ **Implementer subagents** should be run in the background where possible for maximum concurrency.
+@@ -26,9 +28,11 @@ Communication to and from subagents should be sparse. Communicate primarily thro
+ 
+ 4. Use **implementer subagents** to implement each ticket, each in its own worktree on its own branch. Each implementer subagent:
+    - confirms its worktree is based on the integration branch before starting, and resets onto it if not;
+-   - calls the Skill tool with `tdd` to build the ticket;
++   - runs the WORKING-A-TICKET.md gate first, against the integration branch tip. A ticket whose Proof already passes becomes verify-only;
++   - calls the Skill tool with `tdd` to build only the criteria its ticket owns;
+    - proves the ticket works by driving the surface its **Proof** line names and observing the result it names (read the `principle-prove-it-works` skill's SKILL.md), and puts that evidence in its report. Green tests alone are not a Proof;
+-   - merges the integration branch tip into its own branch before reporting done
++   - merges the integration branch tip into its own branch, then re-runs the Proof of every ticket already merged, before reporting done;
++   - stops and reports instead of choosing, if its ticket contradicts another ticket's criteria
+ 
+ 5. Once an **implementer subagent** completes, merge its work to the integration branch with a **merger subagent**.
+ 
+diff --git a/skills/implement/SKILL.md b/skills/implement/SKILL.md
+index 646b80d..f9e1f6d 100644
+--- a/skills/implement/SKILL.md
++++ b/skills/implement/SKILL.md
+@@ -8,6 +8,8 @@ Implement the work described by the user in the spec or tickets.
+ 
+ If the user passes a ticket reference, fetch it from the issue tracker and state its title before starting. If the reference is ambiguous, ask. Note the ticket's **Proof** line: it is the definition of done for close-out step 1.
+ 
++If the work comes from tickets, read the `to-tickets` skill's [WORKING-A-TICKET.md](../to-tickets/WORKING-A-TICKET.md) and follow it: run the gate before you start, build only the criteria this ticket owns, route new behaviour through the spec, and stop on a contradiction.
++
+ Call the Skill tool with "tdd" where possible, at pre-agreed seams.
+ 
+ Run typechecking regularly, single test files regularly, and the full test suite once at the end.
+@@ -16,7 +18,7 @@ Run typechecking regularly, single test files regularly, and the full test suite
+ 
+ Run these in order. Each catches something the others miss.
+ 
+-1. **Prove it works.** Read the `principle-prove-it-works` skill's SKILL.md and follow it. Drive the surface the ticket's Proof line names and observe the result it names. If the ticket has no Proof line, pick the surface a user of this change would touch. Green tests are not this step. If a project-local `verify` skill exists (made by `/create-verification-skill`), use it.
++1. **Prove it works.** Read the `principle-prove-it-works` skill's SKILL.md and follow it. Drive the surface the ticket's Proof line names and observe the result it names. Then re-run the Proof of every ticket already closed, per WORKING-A-TICKET.md rule 5. If the ticket has no Proof line, pick the surface a user of this change would touch. Green tests are not this step. If a project-local `verify` skill exists (made by `/create-verification-skill`), use it.
+ 2. **Spec and standards.** Call the Skill tool with "code-review" to review the work. Its Spec axis checks you built what the ticket asked for.
+ 3. **Adversarial review.** Read the `interrogate` skill's SKILL.md and follow it over the same diff. It is user-invoked, so open its file rather than calling the Skill tool. Use the ticket or spec as the intent in its Step 2 instead of asking the user. Skip this step only for trivial diffs (copy, config, one-line fixes) and say you skipped it.
+ 4. Fix what steps 2 and 3 raise that you agree with. Dismiss the rest with a one-line reason each.
+diff --git a/skills/to-tickets/SKILL.md b/skills/to-tickets/SKILL.md
+index b87dd70..e5ac0df 100644
+--- a/skills/to-tickets/SKILL.md
++++ b/skills/to-tickets/SKILL.md
+@@ -16,12 +16,14 @@ The issue tracker and triage label vocabulary should have been provided to you.
+ 
+ Work from whatever is already in the conversation context. If the user passes a reference (a spec path, an issue number or URL) as an argument, fetch it and read its full body and comments.
+ 
+-### 2. Explore the codebase (optional)
++### 2. Explore the codebase and sketch the shape
+ 
+ If you have not already explored the codebase, do so to understand the current state of the code. Ticket titles and descriptions should use the project's domain glossary vocabulary, and respect ADRs in the area you're touching.
+ 
+ Look for opportunities to prefactor the code to make the implementation easier. "Make the change easy, then make the easy change."
+ 
++Then write a **shape sketch** of a few lines: the data shape the change introduces, and the **seams** it will live at (name them by concept, such as "definition stripping" or "span rewriting", not by file path). Settle the shape, not the code. Leave competing designs and implementation choices to build time. Cut the slices along these seams, so one design decision doesn't quietly complete several tickets.
++
+ ### 3. Draft vertical slices
+ 
+ Break the work into **tracer bullet** tickets.
+@@ -32,6 +34,8 @@ Break the work into **tracer bullet** tickets.
+ - A completed slice is demoable or verifiable on its own, and the ticket says how (its **Proof** line)
+ - Each slice is sized to fit in a single fresh context window
+ - Any prefactoring should be done first
++- **Every acceptance criterion has exactly one owning ticket.** If two tickets would assert the same behaviour, keep it in the earlier one
++- If one design choice would make a later ticket's criteria pass on its own, those criteria belong in the earlier ticket
+ 
+ </vertical-slice-rules>
+ 
+@@ -46,6 +50,7 @@ Present the proposed breakdown as a numbered list. For each ticket, show:
+ - **Title**: short descriptive name
+ - **Blocked by**: which other tickets (if any) must complete first
+ - **What it delivers**: the end-to-end behaviour this ticket makes work
++- **Touches**: the seams from the shape sketch that this ticket changes
+ - **Proof**: how an agent shows it works on the real artifact, not a proxy. Name the surface (browser route, CLI command, API call, script) and the observable result (the value, screen, or output a person would check). Add the test seam when one is obvious. "Tests pass" or "it compiles" is not a Proof.
+ 
+ Ask the user:
+@@ -53,6 +58,7 @@ Ask the user:
+ - Does the granularity feel right? (too coarse / too fine)
+ - Are the blocking edges correct: does each ticket only depend on tickets that genuinely gate it?
+ - Is each Proof something you would accept as evidence the ticket is done?
++- Do any two tickets touch the same seam without a blocking edge between them? Those can't run in parallel.
+ - Should any tickets be merged or split further?
+ 
+ Iterate until the user approves the breakdown.
+@@ -76,6 +82,8 @@ Do NOT close or modify any parent issue.
+ 
+ **Blocked by:** the numbers/titles of the tickets that gate this one, or "None (can start immediately)".
+ 
++**Touches:** the seams this ticket changes, from the shape sketch.
++
+ **Status:** ready-for-agent
+ 
+ - [ ] Acceptance criterion 1
+@@ -104,10 +112,14 @@ The end-to-end behaviour this ticket makes work, from the user's perspective, no
+ 
+ The surface to drive and the observable result that shows it works on the real artifact (plus the test seam, if one is obvious). Implementers verify against this before calling the ticket done.
+ 
++## Touches
++
++The seams this ticket changes, from the shape sketch.
++
+ ## Blocked by
+ 
+ - A reference to each blocking ticket, or "None (can start immediately)". Omit this section when blockers were set as native edges.
+ 
+ </issue-template>
+ 
+-In either form, avoid specific file paths or code snippets: they go stale fast. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts, not a working demo, just the important bits.
++In either form, avoid specific file paths or code snippets: they go stale fast. The Proof line is the exception: it may name the exact commands and fixture paths needed to run it. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts, not a working demo, just the important bits.
+diff --git a/skills/to-tickets/WORKING-A-TICKET.md b/skills/to-tickets/WORKING-A-TICKET.md
+new file mode 100644
+index 0000000..200e4b5
+--- /dev/null
++++ b/skills/to-tickets/WORKING-A-TICKET.md
+@@ -0,0 +1,40 @@
++# Working a ticket
++
++Rules for anyone implementing a ticket that `to-tickets` cut. `implement` and `implement-spec` follow them, and so does any build that starts from one of these tickets. The spec is the source of truth, and a ticket only moves toward it.
++
++## 1. Before you start, run the gate
++
++Run the ticket's Proof against the current code, before writing anything.
++
++- **Some checks fail** (the normal case). Build only the failing criteria.
++- **Every check passes.** Don't close the ticket. It is now a **verify-only** ticket. Run its Proof, then run `code-review`'s Spec axis against this ticket's criteria. If the Spec axis finds a gap, the gap is this ticket's work. If it finds none, close the ticket and name the commit that satisfied it: "satisfied by #01 (`abc123`), verified here".
++
++The gate can narrow a ticket. It never widens one.
++
++## 2. Build only what you own
++
++Each acceptance criterion belongs to exactly one ticket. Write code only to turn **your own** ticket's criteria green.
++
++- You notice another ticket's criterion failing. Note it in your report and leave it.
++- Another ticket's checks go green as a side effect of your work. Fine. Don't claim it: your PR doesn't say it closes that ticket. Add a note to that ticket: "criteria 1–3 green at `abc123`, side effect of #01". Its own gate handles it when its turn comes.
++
++## 3. New behaviour goes through the spec
++
++Your design may reveal a behaviour that no ticket's criteria describe.
++
++- If the spec already says it, add it to the ticket that owns that part of the spec, quoting the spec line.
++- If the spec doesn't say it, it is a new decision, not an implementation detail. Amend the spec and cut a new ticket with its own Proof, Touches, and blocking edges. With a human present, ask first. Unattended, mark the decision `ASSUMED (evidence: …)` in the spec and carry on.
++
++Never fold new behaviour into the ticket you happen to be holding.
++
++## 4. Stop on a contradiction
++
++If satisfying your ticket would break a criterion owned by another ticket (open or closed), stop. That is a spec conflict, not a choice for the implementer. Report both criteria and the case where they disagree. With a human present, wait for the call. Unattended, pick the reading the spec supports best, amend the spec with an `ASSUMED` note, and record it in your report.
++
++## 5. Re-run every earlier Proof when you close
++
++Closing a ticket re-runs the Proof of every ticket closed before it, not just your own. A green suite plus your own Proof isn't enough. Another ticket's Proof catches the regression you didn't think to test for. Keep the Proofs as runnable commands (one script that runs them all is best) so this stays cheap.
++
++## 6. Shared seams don't run in parallel
++
++Two tickets whose **Touches** lines name the same seam must not be built at the same time, even if neither blocks the other. Treat a shared seam as a blocking edge: the lower-numbered ticket goes first.
+-- 
+2.43.0
+
