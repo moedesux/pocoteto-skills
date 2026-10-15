@@ -4,6 +4,98 @@ Matt Pocock's skills and poteto's pstack, working as one pipeline. This bundle h
 
 Matt's skills own alignment: interviewing you, a shared glossary, a spec, and tickets. pstack owns execution: playbooks, delegation, proof on the real surface, adversarial review, and merging. The two packs had no handoff between them. This bundle adds one, the **Proof** line, and resolves the places where the packs collided.
 
+## Install into a repo
+
+From the repo's root:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/moedesux/pocoteto-skills/main/setup.sh | bash
+```
+
+That puts Matt's skills in `.claude/skills/`, declares the pinned pstack plugin in `.claude/settings.json`, and adds the pocoteto rules to `CLAUDE.md`. It also adds `.scratch/` to `.gitignore`, so the local tracker and process notes stay off feature branches. Commit those, so every clone gets the same setup. The settings don't install pstack by themselves, in interactive or headless sessions, so each machine installs it once by command (step 1 below). Re-run it any time to update.
+
+Then open Claude Code in the repo:
+
+1. Install the pstack plugin, once per machine. Claude Code doesn't offer it by itself, even with the repo settings in place. Type `/plugin marketplace add michael-denyer/pstack-claude#v0.9.84`, then `/plugin install pstack@pstack-claude`, then `/reload-plugins`. Headless or cloud agent: `claude plugin marketplace add michael-denyer/pstack-claude#v0.9.84 --scope project`, then `claude plugin install pstack@pstack-claude --scope project`.
+2. `/setup-matt-pocock-skills` (tracker, labels, glossary location)
+3. `/pstack:setup-pstack` (models per role)
+4. `/pstack:create-verification-skill` (a project `verify` skill the Proof checks use)
+5. Start a feature with `/grill-with-docs` (see How you use it), or type `/flow` if you're not sure where to begin.
+
+If you had the old marketplace `mattpocock-skills` plugin, uninstall it so Matt's skills don't load twice.
+
+Agents: see [AGENTS.md](AGENTS.md).
+
+**For all your repos instead of one:** `./install.sh` installs the skills user-wide (`~/.claude/skills`). You still need the plugin and the `CLAUDE.md` block per repo, so `setup.sh` is usually the better choice.
+
+## How you use it
+
+Six commands take a feature from idea to merged PR. You answer questions in the first three. From the fourth on, the work runs by itself and stops at the gates (red below) until they pass.
+
+```mermaid
+flowchart TD
+  S0["<b>0. Once per repo</b><br/>setup.sh, then /setup-matt-pocock-skills,<br/>/pstack:setup-pstack, /pstack:create-verification-skill"]
+  S1["<b>1. Design</b><br/>/grill-with-docs<br/><i>you answer the interview</i>"]
+  S2["<b>2. Spec</b><br/>/to-spec<br/><i>you read and correct it</i>"]
+  S3["<b>3. Tickets</b><br/>/to-tickets<br/><i>you approve the breakdown</i>"]
+  S4["<b>4. Build, verify, review, open the PR</b><br/>/pstack:poteto-mode implement N<br/>or /implement-spec for every ticket at once"]
+  S5["<b>5. Get it green</b><br/>/pstack:poteto-mode babysit PR"]
+  S6["<b>6. Merge</b><br/>/pstack:poteto-mode ship the stack"]
+  L["<b>Afterwards, optional</b><br/>/retro"]
+
+  S0 --> S1 --> S2 --> S3
+  S3 -- "fresh session" --> S4 --> S5 --> S6 --> L
+  S4 -. "next ticket" .-> S4
+
+  G3["Every Proof dry-run, must fail first<br/>Timing check on code that scans user input<br/>Escaping goes in the first ticket that outputs"]
+  G4["Proof run before any code<br/>Proof passes on its real surface<br/>Earlier Proofs re-run<br/>Spec check, then multi-model review<br/>Every review-found bug gets a test"]
+  G6["Verify skill updated for the new feature"]
+  S3 --- G3
+  S4 --- G4
+  S6 --- G6
+
+  classDef you fill:#e4eef4,stroke:#2c6a8f,color:#1d2320
+  classDef auto fill:#e2efe7,stroke:#2f6b4b,color:#1d2320
+  classDef gate fill:#f5e4ea,stroke:#8a2f4a,color:#1d2320
+  class S0,S1,S2,S3 you
+  class S4,S5,S6,L auto
+  class G3,G4,G6 gate
+```
+
+| # | You type | You do | Runs by itself |
+| --- | --- | --- | --- |
+| 0 | `setup.sh`, then `/setup-matt-pocock-skills`, `/pstack:setup-pstack`, `/pstack:create-verification-skill` | Pick a tracker, a model per role, and how to check the app works | Skills, rules and the project `verify` skill |
+| 1 | `/grill-with-docs`, then describe the feature | Answer until every decision is made | `GLOSSARY.md` terms, ADRs |
+| 2 | `/to-spec` | Read it, correct it | The spec, filed on the tracker |
+| 3 | `/to-tickets` | Approve the breakdown | A shape sketch, then tickets with a **Proof** and a **Touches** line each |
+| 4 | `/pstack:poteto-mode implement #<n>` (one ticket), or `/implement-spec` (all of them) | Read what it reports | Build, Proof on the real surface, code review, multi-model review, small commits, PR |
+| 5 | `/pstack:poteto-mode babysit <pr>` | Leave it running | Conflicts, review comments, failing CI |
+| 6 | `/pstack:poteto-mode ship the stack`, or merge yourself | Typing it is your go-ahead | Re-check each PR, merge bottom-up, then update the `verify` skill if a feature shipped |
+
+Run steps 1 to 3 in one session, and start a fresh one for step 4. With one ticket at a time, repeat step 4 for each ticket.
+
+**When to type `/flow`.** The six commands above don't need it. Type `/flow` when you're not sure where you are, or when you start from something else: a bug, a slow path, an incoming issue, someone else's branch. It answers with the next command. In an unattended run it runs that command itself. The rules that matter after a merge don't depend on `/flow`: they are in the `CLAUDE.md` block, which every session reads.
+
+### Gates pocoteto adds
+
+Neither pack enforces these on its own. Each one stops the work until it passes.
+
+| Where | Gate |
+| --- | --- |
+| Tickets | Every Proof is dry-run when it's written. It must fail for the predicted reason, and a check that selects zero tests is broken. |
+| Tickets | A ticket that adds a regex or scanner over user input carries a timing check on a large hostile input (at least 64 KB). |
+| Tickets | Escaping user input belongs to the first ticket that outputs it, never a later hardening ticket. |
+| Build | The Proof runs before any code. Already green means verify-only, never auto-close. |
+| Build | A contradiction with another ticket's criterion stops the work. Tickets on the same seam never build in parallel. |
+| Verify | Done means the Proof passes on the surface it names. Closing a ticket re-runs every earlier Proof. |
+| Review | `code-review` with its Spec check, then `interrogate` (multi-model attack) for any nontrivial change: once per ticket, or once over the branch when tickets ship together. |
+| Review | A new option or extra is tested switched on together with each existing one. |
+| Review | Every bug a reviewer finds lands with a test that fails without its fix. |
+| Review | No independent reviewer available means one labelled self-review, `BLOCKED: independent review`, and never merge-ready. |
+| Design | In an interview the agent runs on itself, questions about code mechanism stay open for the build's design step (`architect` or arena) instead of being settled as assumptions. |
+| Ship | A user-facing feature adds its entry to the `verify` skill's feature map, and after a merge `/pstack:maintain-verification-skill` keeps the whole map current. |
+| Branch | Tickets in `.scratch/`, interview notes and the retro stay off the feature branch. |
+
 ## Upstream
 
 | Pack | Source | How |
@@ -44,30 +136,6 @@ All changes to Matt's skills live in `patches/` as small commits, so you can rea
 | PR bodies didn't link tickets or call one-way doors | Opening a PR adds `Closes #<n>`, the door call in Blast Radius, before/after Verification, and the Proof as the first check. |
 | `retro` found problems and stopped | `retro` ends by naming the command for each finding: `/correct`, `/reflect`, `/improve-codebase-architecture`, or `/grill-with-docs`. |
 | `correct` wrote its rule table into `CLAUDE.md`, which Matt keeps minimal | The table goes in `CODING_STANDARDS.md`, which `code-review` reads at review time. `CLAUDE.md` gets a one-line pointer. |
-
-## Install into a repo
-
-From the repo's root:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/moedesux/pocoteto-skills/main/setup.sh | bash
-```
-
-That puts Matt's skills in `.claude/skills/`, declares the pinned pstack plugin in `.claude/settings.json`, and adds the pocoteto rules to `CLAUDE.md`. It also adds `.scratch/` to `.gitignore`, so the local tracker and process notes stay off feature branches. Commit those, so every clone gets the same setup. The settings don't install pstack by themselves, in interactive or headless sessions, so each machine installs it once by command (step 1 below). Re-run it any time to update.
-
-Then open Claude Code in the repo:
-
-1. Install the pstack plugin, once per machine. Claude Code doesn't offer it by itself, even with the repo settings in place. Type `/plugin marketplace add michael-denyer/pstack-claude#v0.9.84`, then `/plugin install pstack@pstack-claude`, then `/reload-plugins`. Headless or cloud agent: `claude plugin marketplace add michael-denyer/pstack-claude#v0.9.84 --scope project`, then `claude plugin install pstack@pstack-claude --scope project`.
-2. `/setup-matt-pocock-skills` (tracker, labels, glossary location)
-3. `/pstack:setup-pstack` (models per role)
-4. `/pstack:create-verification-skill` (a project `verify` skill the Proof checks use)
-5. `/flow` to start.
-
-If you had the old marketplace `mattpocock-skills` plugin, uninstall it so Matt's skills don't load twice.
-
-Agents: see [AGENTS.md](AGENTS.md).
-
-**For all your repos instead of one:** `./install.sh` installs the skills user-wide (`~/.claude/skills`). You still need the plugin and the `CLAUDE.md` block per repo, so `setup.sh` is usually the better choice.
 
 ## Updating
 

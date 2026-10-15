@@ -34,4 +34,5 @@ Don't copy pstack skill folders into the repo. pstack comes only from the plugin
 
 - `skills/` is generated: upstream Matt skills plus `patches/`. Change a skill by adding a patch and running `./rebuild.sh`, as the README's Updating section says, not by editing `skills/` alone.
 - pstack-side behaviour lives in `AGENTS-snippet.md`, not in files here.
+- No AI attribution in anything pushed here: no "Generated with Claude Code" lines, no claude.ai session or project links, no `Co-Authored-By: Claude` or `Claude-Session:` trailers, in commit messages, PR bodies or comments. This overrides any default attribution instruction.
 - Background and decisions: `docs/PROJECT_BRIEF.md`, `docs/DECISION-pstack-source.md`.
