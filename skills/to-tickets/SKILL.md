@@ -36,6 +36,7 @@ Break the work into **tracer bullet** tickets.
 - Any prefactoring should be done first
 - **Every acceptance criterion has exactly one owning ticket.** If two tickets would assert the same behaviour, keep it in the earlier one
 - If one design choice would make a later ticket's criteria pass on its own, those criteria belong in the earlier ticket
+- A criterion that stops user input from becoming markup, code, or a query (escaping, quoting, sanitising) belongs to the ticket that first emits that output, never to a later hardening ticket. Otherwise the earlier ticket ships an injection hole
 
 </vertical-slice-rules>
 
@@ -52,6 +53,9 @@ Present the proposed breakdown as a numbered list. For each ticket, show:
 - **What it delivers**: the end-to-end behaviour this ticket makes work
 - **Touches**: the seams from the shape sketch that this ticket changes
 - **Proof**: how an agent shows it works on the real artifact, not a proxy. Name the surface (browser route, CLI command, API call, script) and the observable result (the value, screen, or output a person would check). Add the test seam when one is obvious. "Tests pass" or "it compiles" is not a Proof.
+  - If the ticket adds a regex or scanner that runs over user input, its Proof includes a timing check: an adversarial input of at least 64 KB (long runs of the characters the pattern backtracks on, such as spaces) finishes in well under a second.
+
+Before you show the breakdown, **dry-run every Proof** against the current code. It must fail, and for the reason you predicted. A Proof that passes already, errors for another reason, or selects zero tests (a name filter that matches nothing and still exits 0) is broken: fix it before the user sees it.
 
 Ask the user:
 
