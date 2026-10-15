@@ -53,11 +53,11 @@ From the repo's root:
 curl -fsSL https://raw.githubusercontent.com/moedesux/pocoteto-skills/main/setup.sh | bash
 ```
 
-That puts Matt's skills in `.claude/skills/`, turns on the pstack plugin in `.claude/settings.json`, and adds the pocoteto rules to `CLAUDE.md`. It also adds `.scratch/` to `.gitignore`, so the local tracker and process notes stay off feature branches. Commit those, so every clone gets the same setup. Headless and cloud agents don't act on the plugin settings and must install the plugin by command (step 1 below). Re-run it any time to update.
+That puts Matt's skills in `.claude/skills/`, declares the pinned pstack plugin in `.claude/settings.json`, and adds the pocoteto rules to `CLAUDE.md`. It also adds `.scratch/` to `.gitignore`, so the local tracker and process notes stay off feature branches. Commit those, so every clone gets the same setup. The settings don't install pstack by themselves, in interactive or headless sessions, so each machine installs it once by command (step 1 below). Re-run it any time to update.
 
 Then open Claude Code in the repo:
 
-1. Accept the prompt to install the pstack plugin. If none appears: `/plugin marketplace add michael-denyer/pstack-claude#v0.9.84`, then `/plugin install pstack@pstack-claude`. Headless or cloud agent: `claude plugin marketplace add michael-denyer/pstack-claude#v0.9.84 --scope project`, then `claude plugin install pstack@pstack-claude --scope project`.
+1. Install the pstack plugin, once per machine. Claude Code doesn't offer it by itself, even with the repo settings in place. Type `/plugin marketplace add michael-denyer/pstack-claude#v0.9.84`, then `/plugin install pstack@pstack-claude`, then `/reload-plugins`. Headless or cloud agent: `claude plugin marketplace add michael-denyer/pstack-claude#v0.9.84 --scope project`, then `claude plugin install pstack@pstack-claude --scope project`.
 2. `/setup-matt-pocock-skills` (tracker, labels, glossary location)
 3. `/pstack:setup-pstack` (models per role)
 4. `/pstack:create-verification-skill` (a project `verify` skill the Proof checks use)
