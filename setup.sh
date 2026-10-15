@@ -36,8 +36,9 @@ echo "pocoteto: setting up $target"
 # 1. Skills, project scope.
 POCOTETO_QUIET_NEXT=1 bash "$here/install.sh" --project "$target"
 
-# 2. Ask Claude Code to install pstack for this repo. Claude Code reads these keys
-#    and offers to install the plugin when the repo is trusted.
+# 2. Declare the pinned pstack marketplace and enable the plugin for this repo.
+#    Claude Code does not offer to install it on its own (tested 2026-10-15, v2.1.296),
+#    so the user still adds the marketplace once per machine; see the output below.
 settings="$target/.claude/settings.json"
 mkdir -p "$target/.claude"
 [ -s "$settings" ] || echo '{}' > "$settings"
@@ -85,10 +86,12 @@ fi
 cat <<EOF
 
 Done. Next, open Claude Code in this repo and:
-  1. Accept the prompt to install the pstack plugin. No prompt? Run:
+  1. Install the pstack plugin. Claude Code won't offer it by itself. Type these at the
+     prompt, each starting with the slash (no leading space):
        /plugin marketplace add michael-denyer/pstack-claude#$PSTACK_REF
        /plugin install pstack@pstack-claude
-     Headless or cloud agent (claude -p, CI)? It never sees the prompt. Run, in the repo:
+       /reload-plugins
+     Headless or cloud agent (claude -p, CI)? Run, in the repo:
        claude plugin marketplace add michael-denyer/pstack-claude#$PSTACK_REF --scope project
        claude plugin install pstack@pstack-claude --scope project
   2. /setup-matt-pocock-skills        (tracker, labels, glossary location)
