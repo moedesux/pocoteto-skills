@@ -154,7 +154,7 @@ pstack is pinned by `PSTACK_REF` in `setup.sh`, a release tag of `michael-denyer
 2. Set `PSTACK_REF` to the new tag, update the tag and commit in the Upstream table above, and open a PR here.
 3. After it merges, re-run `setup.sh` in each repo and commit the changed `.claude/settings.json`. On a machine that already has the marketplace, run `claude plugin marketplace update pstack-claude` and `claude plugin update pstack@pstack-claude`.
 
-If you added the `pstack-claude` marketplace by hand before it was pinned, it follows HEAD. Remove it (`claude plugin marketplace remove pstack-claude`) and add it again with `#v0.9.84`.
+If you added the `pstack-claude` marketplace by hand before it was pinned, it follows HEAD. Remove it (`claude plugin marketplace remove pstack-claude`) and add it again with `#v0.9.84`. If your user settings (`~/.claude/settings.json`) list `pstack-claude` under `extraKnownMarketplaces` without a `ref`, that entry wins: `marketplace add …#v0.9.84` is refused and installs take the latest release. Add `"ref": "v0.9.84"` to that entry's `source`, or delete the entry. `setup.sh` warns when it finds one.
 
 Matt's skills are bumped the same deliberate way: `./rebuild.sh --latest ./build` shows whether the patches still apply on the newest upstream; read the upstream diff (`git diff 49dd158 <new>` in `mattpocock/skills`) before you change `MATT_PIN`.
 
