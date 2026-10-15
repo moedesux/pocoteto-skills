@@ -55,6 +55,21 @@ open(p, "a").write("\n")
 PY
 echo "Wrote pstack plugin settings to $settings (pinned to $PSTACK_REF)"
 
+# A user-level marketplace entry for pstack-claude overrides the repo's pinned one.
+user_settings="$HOME/.claude/settings.json"
+if [ -f "$user_settings" ]; then
+  python3 - "$user_settings" "$PSTACK_REF" <<'PY' || true
+import json, sys
+try:
+    src = json.load(open(sys.argv[1]))["extraKnownMarketplaces"]["pstack-claude"]["source"]
+except (KeyError, TypeError, ValueError):
+    sys.exit(0)
+if src.get("ref") != sys.argv[2]:
+    print(f"WARNING: {sys.argv[1]} lists the pstack-claude marketplace at ref {src.get('ref') or 'HEAD'}, not {sys.argv[2]}.")
+    print(f'  It overrides this repo\'s pin. Set "ref": "{sys.argv[2]}" in that entry\'s source, or delete the entry.')
+PY
+fi
+
 # 3. CLAUDE.md block (replaced in place on re-run).
 claude_md="$target/CLAUDE.md"
 touch "$claude_md"
