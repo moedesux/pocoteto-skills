@@ -23,10 +23,10 @@ You were asked to set up Matt Pocock's skills + pstack ("pocoteto") in a reposit
 4. Install the pstack plugin.
    - **Headless or cloud agent** (`claude -p`, CI, an unattended session): you must run these yourself, from the repo. Such sessions ignore the plugin settings in `.claude/settings.json`:
      ```bash
-     claude plugin marketplace add michael-denyer/pstack-claude
+     claude plugin marketplace add michael-denyer/pstack-claude#v0.9.84 --scope project
      claude plugin install pstack@pstack-claude --scope project
      ```
-   - **Interactive session:** Claude Code offers to install it when the repo is trusted. If the `/pstack:` commands are missing after a restart, run `/plugin marketplace add michael-denyer/pstack-claude` and `/plugin install pstack@pstack-claude`.
+   - **Interactive session:** Claude Code offers to install it when the repo is trusted. If the `/pstack:` commands are missing after a restart, run `/plugin marketplace add michael-denyer/pstack-claude#v0.9.84` and `/plugin install pstack@pstack-claude`.
 
 Don't copy pstack skill folders into the repo. pstack comes only from the plugin, and loose copies load twice.
 

@@ -15,6 +15,9 @@
 set -euo pipefail
 
 SOURCE_REPO="${POCOTETO_REPO:-https://github.com/moedesux/pocoteto-skills}"
+# pstack is pinned to a release tag of the pstack-claude marketplace (v0.9.84 = commit 990cd7b).
+# Bump it on purpose, after reviewing the upstream diff: see the README's Updating section.
+PSTACK_REF=v0.9.84
 target="$(cd "${1:-.}" && pwd)"
 
 # Find the bundle: next to this script, or a fresh shallow clone when piped from curl.
@@ -38,18 +41,18 @@ POCOTETO_QUIET_NEXT=1 bash "$here/install.sh" --project "$target"
 settings="$target/.claude/settings.json"
 mkdir -p "$target/.claude"
 [ -s "$settings" ] || echo '{}' > "$settings"
-python3 - "$settings" <<'PY'
+python3 - "$settings" "$PSTACK_REF" <<'PY'
 import json, sys
 p = sys.argv[1]
 s = json.load(open(p))
 s.setdefault("extraKnownMarketplaces", {})["pstack-claude"] = {
-    "source": {"source": "github", "repo": "michael-denyer/pstack-claude"}
+    "source": {"source": "github", "repo": "michael-denyer/pstack-claude", "ref": sys.argv[2]}
 }
 s.setdefault("enabledPlugins", {})["pstack@pstack-claude"] = True
 json.dump(s, open(p, "w"), indent=2)
 open(p, "a").write("\n")
 PY
-echo "Wrote pstack plugin settings to $settings"
+echo "Wrote pstack plugin settings to $settings (pinned to $PSTACK_REF)"
 
 # 3. CLAUDE.md block (replaced in place on re-run).
 claude_md="$target/CLAUDE.md"
@@ -79,14 +82,14 @@ if ! grep -qxF '.scratch/' "$gitignore"; then
   echo "Added .scratch/ to $gitignore"
 fi
 
-cat <<'EOF'
+cat <<EOF
 
 Done. Next, open Claude Code in this repo and:
   1. Accept the prompt to install the pstack plugin. No prompt? Run:
-       /plugin marketplace add michael-denyer/pstack-claude
+       /plugin marketplace add michael-denyer/pstack-claude#$PSTACK_REF
        /plugin install pstack@pstack-claude
      Headless or cloud agent (claude -p, CI)? It never sees the prompt. Run, in the repo:
-       claude plugin marketplace add michael-denyer/pstack-claude
+       claude plugin marketplace add michael-denyer/pstack-claude#$PSTACK_REF --scope project
        claude plugin install pstack@pstack-claude --scope project
   2. /setup-matt-pocock-skills        (tracker, labels, glossary location)
   3. /pstack:setup-pstack             (models per role)

@@ -9,7 +9,9 @@ Matt's skills own alignment: interviewing you, a shared glossary, a spec, and ti
 | Pack | Source | How |
 | --- | --- | --- |
 | Matt Pocock skills | `github.com/mattpocock/skills` (engineering + productivity), pinned `49dd158` | Files in `skills/`, rebuilt by `rebuild.sh` from `patches/` |
-| pstack | `michael-denyer/pstack-claude` plugin (community Claude Code port) | Installed as a plugin, updated the plugin way. Not in this bundle. |
+| pstack | `michael-denyer/pstack-claude` plugin (community Claude Code port), pinned to release tag `v0.9.84` (commit `990cd7b`) | Installed as a plugin from the marketplace at that tag (`PSTACK_REF` in `setup.sh`). Not in this bundle. |
+
+Neither pack follows upstream HEAD. Updates come in only when someone bumps a pin after reading the upstream diff (see Updating).
 
 Both are MIT.
 
@@ -55,7 +57,7 @@ That puts Matt's skills in `.claude/skills/`, turns on the pstack plugin in `.cl
 
 Then open Claude Code in the repo:
 
-1. Accept the prompt to install the pstack plugin. If none appears: `/plugin marketplace add michael-denyer/pstack-claude`, then `/plugin install pstack@pstack-claude`. Headless or cloud agent: `claude plugin marketplace add michael-denyer/pstack-claude`, then `claude plugin install pstack@pstack-claude --scope project`.
+1. Accept the prompt to install the pstack plugin. If none appears: `/plugin marketplace add michael-denyer/pstack-claude#v0.9.84`, then `/plugin install pstack@pstack-claude`. Headless or cloud agent: `claude plugin marketplace add michael-denyer/pstack-claude#v0.9.84 --scope project`, then `claude plugin install pstack@pstack-claude --scope project`.
 2. `/setup-matt-pocock-skills` (tracker, labels, glossary location)
 3. `/pstack:setup-pstack` (models per role)
 4. `/pstack:create-verification-skill` (a project `verify` skill the Proof checks use)
@@ -75,6 +77,18 @@ Agents: see [AGENTS.md](AGENTS.md).
 ```
 
 The pin (`MATT_PIN`) is at the top of `rebuild.sh`. `--latest` rebases with a three-way merge, so an upstream change near a patched line usually still applies. On a real conflict it stops and names the file: resolve it in `./build`, then `git rebase --continue`. When it's clean, copy `build/skills` over `skills/`, regenerate `patches/` as the script header shows, update the pins, and re-run `install.sh`.
+
+### Bumping pstack
+
+pstack is pinned by `PSTACK_REF` in `setup.sh`, a release tag of `michael-denyer/pstack-claude`. `setup.sh` writes it into each repo's `.claude/settings.json` as the marketplace `ref`, and `claude plugin marketplace update` stays on that tag. To move to a newer release:
+
+1. Read what changed: `git clone https://github.com/michael-denyer/pstack-claude && cd pstack-claude && git diff v0.9.84 <new-tag> -- plugins/pstack`, plus `CHANGES.md`. Check it against the rules in `AGENTS-snippet.md` and the pstack skill names `/flow` and the patches refer to.
+2. Set `PSTACK_REF` to the new tag, update the tag and commit in the Upstream table above, and open a PR here.
+3. After it merges, re-run `setup.sh` in each repo and commit the changed `.claude/settings.json`. On a machine that already has the marketplace, run `claude plugin marketplace update pstack-claude` and `claude plugin update pstack@pstack-claude`.
+
+If you added the `pstack-claude` marketplace by hand before it was pinned, it follows HEAD. Remove it (`claude plugin marketplace remove pstack-claude`) and add it again with `#v0.9.84`.
+
+Matt's skills are bumped the same deliberate way: `./rebuild.sh --latest ./build` shows whether the patches still apply on the newest upstream; read the upstream diff (`git diff 49dd158 <new>` in `mattpocock/skills`) before you change `MATT_PIN`.
 
 ## Not included
 
