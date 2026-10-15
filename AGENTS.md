@@ -12,7 +12,7 @@ You were asked to set up Matt Pocock's skills + pstack ("pocoteto") in a reposit
 
 2. It writes four things into the target repo. Commit them on a branch:
    - `.claude/skills/`: Matt's skills with the pocoteto patches, plus `/flow`.
-   - `.claude/settings.json`: enables the `pstack@pstack-claude` plugin, so Claude Code installs pstack for this repo.
+   - `.claude/settings.json`: declares the pinned `pstack-claude` marketplace and enables `pstack@pstack-claude` for this repo. It doesn't install the plugin by itself; step 4 does.
    - `CLAUDE.md`: a block between `<!-- pocoteto:start -->` and `<!-- pocoteto:end -->`. Don't hand-edit inside the markers; re-run setup to update.
    - `.gitignore`: adds `.scratch/`, so the local tracker and process notes stay off feature branches.
 
@@ -26,7 +26,7 @@ You were asked to set up Matt Pocock's skills + pstack ("pocoteto") in a reposit
      claude plugin marketplace add michael-denyer/pstack-claude#v0.9.84 --scope project
      claude plugin install pstack@pstack-claude --scope project
      ```
-   - **Interactive session:** Claude Code offers to install it when the repo is trusted. If the `/pstack:` commands are missing after a restart, run `/plugin marketplace add michael-denyer/pstack-claude#v0.9.84` and `/plugin install pstack@pstack-claude`.
+   - **Interactive session:** Claude Code does not offer to install it by itself, even with the settings in place. Tell the human to type `/plugin marketplace add michael-denyer/pstack-claude#v0.9.84`, then `/plugin install pstack@pstack-claude`, then `/reload-plugins`. Once per machine.
 
 Don't copy pstack skill folders into the repo. pstack comes only from the plugin, and loose copies load twice.
 
