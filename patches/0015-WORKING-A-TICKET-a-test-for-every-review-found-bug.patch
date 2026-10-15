@@ -1,0 +1,52 @@
+From 017e21173dae3d8e22d8b99b9fee9fc68077767b Mon Sep 17 00:00:00 2001
+From: pocoteto <pocoteto@localhost>
+Date: Thu, 15 Oct 2026 19:01:46 +0000
+Subject: [PATCH] WORKING-A-TICKET: a test for every review-found bug, new
+ features go into the verify feature map; /flow routes to
+ maintain-verification-skill after a feature merges
+
+---
+ skills/flow/SKILL.md                  | 3 ++-
+ skills/to-tickets/WORKING-A-TICKET.md | 8 ++++++++
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/skills/flow/SKILL.md b/skills/flow/SKILL.md
+index 72a3a34..927b3f3 100644
+--- a/skills/flow/SKILL.md
++++ b/skills/flow/SKILL.md
+@@ -11,7 +11,7 @@ Two packs, one pipeline. Matt's skills own **alignment**: what to build, in whos
+ 
+ Find where the user is in the table, answer with the next command to type, and stop. Don't start the work. **Unattended:** if no human is at the keyboard and you are the one who would type the command, run it yourself instead of stopping, then come back here for the next one. Before you describe a skill in detail, read its SKILL.md: this table is orientation only.
+ 
+-pstack is installed as the pstack-claude plugin, so its commands carry the plugin's prefix: `/poteto-mode` below is typed `/pstack:poteto-mode`, and the same for `/how`, `/why`, `/ketchup`, `/correct`, `/reflect`, `/setup-pstack`, `/create-verification-skill` and `/benchmark-checklist`. Matt's commands have no prefix.
++pstack is installed as the pstack-claude plugin, so its commands carry the plugin's prefix: `/poteto-mode` below is typed `/pstack:poteto-mode`, and the same for `/how`, `/why`, `/ketchup`, `/correct`, `/reflect`, `/setup-pstack`, `/create-verification-skill`, `/maintain-verification-skill` and `/benchmark-checklist`. Matt's commands have no prefix.
+ 
+ ## The main flow
+ 
+@@ -28,6 +28,7 @@ pstack is installed as the pstack-claude plugin, so its commands carry the plugi
+ | 5. Review | Runs inside stage 4: `code-review` (Spec and Standards axes), then `interrogate` (multi-model attack) | Findings fixed or dismissed with a reason |
+ | 6. Merge | `/poteto-mode babysit <pr>`, then `/poteto-mode ship the stack` | Merged PRs |
+ | 7. Learn | `/retro`, then the command it names: `/correct` (make the mistake impossible), `/reflect` (edit a skill), `/improve-codebase-architecture` | Checks in CI, `CODING_STANDARDS.md` rows, skill edits |
++| 7b. Keep the verify skill current | After a merge that added or changed a user-facing feature: `/maintain-verification-skill` | A `verify` skill and feature map that cover what shipped, so the next Proof can use them |
+ 
+ Use `/poteto-mode` for stage 4 when you want its playbooks, delegation, and PR flow. Use `/implement` when you want a lighter single-agent build in the current branch. Both now close out with the Proof check, `code-review`, and `interrogate`.
+ 
+diff --git a/skills/to-tickets/WORKING-A-TICKET.md b/skills/to-tickets/WORKING-A-TICKET.md
+index 200e4b5..f794a85 100644
+--- a/skills/to-tickets/WORKING-A-TICKET.md
++++ b/skills/to-tickets/WORKING-A-TICKET.md
+@@ -38,3 +38,11 @@ Closing a ticket re-runs the Proof of every ticket closed before it, not just yo
+ ## 6. Shared seams don't run in parallel
+ 
+ Two tickets whose **Touches** lines name the same seam must not be built at the same time, even if neither blocks the other. Treat a shared seam as a blocking edge: the lower-numbered ticket goes first.
++
++## 7. Every bug found in review gets a test
++
++When `code-review`, `interrogate`, a delegate or any other reviewer finds a bug in your diff, the fix lands with a test that fails without it. Check it: remove or revert the guard, watch the test fail, put the guard back. A fix that a reviewer reproduced by hand but no test pins will come back, as it did in the field tests.
++
++## 8. A new feature goes into the verify skill's feature map
++
++If your ticket adds or changes a user-facing feature and the project has a `verify` skill with a feature map, add or update that feature's entry in the same PR, and drive it once through the skill. Periodic upkeep of the whole map is `/pstack:maintain-verification-skill` (stage 7b in `/flow`).
+-- 
+2.43.0
+
