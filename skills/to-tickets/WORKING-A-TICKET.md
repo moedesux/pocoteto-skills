@@ -38,3 +38,11 @@ Closing a ticket re-runs the Proof of every ticket closed before it, not just yo
 ## 6. Shared seams don't run in parallel
 
 Two tickets whose **Touches** lines name the same seam must not be built at the same time, even if neither blocks the other. Treat a shared seam as a blocking edge: the lower-numbered ticket goes first.
+
+## 7. Every bug found in review gets a test
+
+When `code-review`, `interrogate`, a delegate or any other reviewer finds a bug in your diff, the fix lands with a test that fails without it. Check it: remove or revert the guard, watch the test fail, put the guard back. A fix that a reviewer reproduced by hand but no test pins will come back, as it did in the field tests.
+
+## 8. A new feature goes into the verify skill's feature map
+
+If your ticket adds or changes a user-facing feature and the project has a `verify` skill with a feature map, add or update that feature's entry in the same PR, and drive it once through the skill. Periodic upkeep of the whole map is `/pstack:maintain-verification-skill` (stage 7b in `/flow`).

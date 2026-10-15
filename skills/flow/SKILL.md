@@ -11,7 +11,7 @@ Two packs, one pipeline. Matt's skills own **alignment**: what to build, in whos
 
 Find where the user is in the table, answer with the next command to type, and stop. Don't start the work. **Unattended:** if no human is at the keyboard and you are the one who would type the command, run it yourself instead of stopping, then come back here for the next one. Before you describe a skill in detail, read its SKILL.md: this table is orientation only.
 
-pstack is installed as the pstack-claude plugin, so its commands carry the plugin's prefix: `/poteto-mode` below is typed `/pstack:poteto-mode`, and the same for `/how`, `/why`, `/ketchup`, `/correct`, `/reflect`, `/setup-pstack`, `/create-verification-skill` and `/benchmark-checklist`. Matt's commands have no prefix.
+pstack is installed as the pstack-claude plugin, so its commands carry the plugin's prefix: `/poteto-mode` below is typed `/pstack:poteto-mode`, and the same for `/how`, `/why`, `/ketchup`, `/correct`, `/reflect`, `/setup-pstack`, `/create-verification-skill`, `/maintain-verification-skill` and `/benchmark-checklist`. Matt's commands have no prefix.
 
 ## The main flow
 
@@ -28,6 +28,7 @@ pstack is installed as the pstack-claude plugin, so its commands carry the plugi
 | 5. Review | Runs inside stage 4: `code-review` (Spec and Standards axes), then `interrogate` (multi-model attack) | Findings fixed or dismissed with a reason |
 | 6. Merge | `/poteto-mode babysit <pr>`, then `/poteto-mode ship the stack` | Merged PRs |
 | 7. Learn | `/retro`, then the command it names: `/correct` (make the mistake impossible), `/reflect` (edit a skill), `/improve-codebase-architecture` | Checks in CI, `CODING_STANDARDS.md` rows, skill edits |
+| 7b. Keep the verify skill current | After a merge that added or changed a user-facing feature: `/maintain-verification-skill` | A `verify` skill and feature map that cover what shipped, so the next Proof can use them |
 
 Use `/poteto-mode` for stage 4 when you want its playbooks, delegation, and PR flow. Use `/implement` when you want a lighter single-agent build in the current branch. Both now close out with the Proof check, `code-review`, and `interrogate`.
 
