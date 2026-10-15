@@ -9,7 +9,7 @@ argument-hint: "Where are you? (an idea, a spec, a ticket, a bug, a PR, a finish
 
 Two packs, one pipeline. Matt's skills own **alignment**: what to build, in whose words, cut into tickets. pstack owns **execution**: building it, proving it on the real surface, getting it merged. The seam between them is the ticket and its **Proof** line.
 
-Find where the user is in the table, answer with the next command to type, and stop. Don't start the work. Before you describe a skill in detail, read its SKILL.md: this table is orientation only.
+Find where the user is in the table, answer with the next command to type, and stop. Don't start the work. **Unattended:** if no human is at the keyboard and you are the one who would type the command, run it yourself instead of stopping, then come back here for the next one. Before you describe a skill in detail, read its SKILL.md: this table is orientation only.
 
 pstack is installed as the pstack-claude plugin, so its commands carry the plugin's prefix: `/poteto-mode` below is typed `/pstack:poteto-mode`, and the same for `/how`, `/why`, `/ketchup`, `/correct`, `/reflect`, `/setup-pstack`, `/create-verification-skill` and `/benchmark-checklist`. Matt's commands have no prefix.
 

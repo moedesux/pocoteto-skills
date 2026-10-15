@@ -2,7 +2,9 @@
 
 Matt Pocock's skills and poteto's pstack, working as one pipeline. This bundle holds Matt's skills with the pocoteto patches. pstack comes from the **pstack-claude plugin**, installed unchanged; the pstack-side changes live in `AGENTS-snippet.md`, a CLAUDE.md block the plugin follows.
 
-Matt's skills own alignment: interviewing you, a shared glossary, a spec, and tickets. pstack owns execution: playbooks, delegation, proof on the real surface, adversarial review, and merging. The two packs ha## Upstream
+Matt's skills own alignment: interviewing you, a shared glossary, a spec, and tickets. pstack owns execution: playbooks, delegation, proof on the real surface, adversarial review, and merging. The two packs had no handoff between them. This bundle adds one, the **Proof** line, and resolves the places where the packs collided.
+
+## Upstream
 
 | Pack | Source | How |
 | --- | --- | --- |
@@ -13,9 +15,7 @@ Both are MIT.
 
 > The "What changed" tables below describe the original all-in-one bundle. In this version the pstack-side rows (`/explain` rename, poteto-mode and playbook edits, the `correct` table location, poteto-help links) are rules in `AGENTS-snippet.md` instead of file edits, and pstack's one-shot explainer is `/pstack:teach`.
 
- the standalone mirror of `cursor/plugins/pstack` | `fce11a3`, 2026-10-12 |
-
-Both are MIT. All changes live in `patches/` as twelve small commits, so you can read each one on its own.
+All changes to Matt's skills live in `patches/` as small commits, so you can read each one on its own.
 
 ## What changed
 
@@ -24,7 +24,7 @@ Both are MIT. All changes live in `patches/` as twelve small commits, so you can
 | Problem | Fix |
 | --- | --- |
 | Both packs ship a skill named `tdd` | Kept Matt's, which covers features and bugs. pstack's bug-fix guardrails moved into it: skip a test that would be bad, use the closest executable check, report red-then-green evidence. |
-| Both packs ship a skill named `teach`, with different jobs | Matt's `/teach` (learn a topic over sessions) keeps the name. pstack's one-shot explainer is now `/explain`. `poteto-help` links updated. |
+| Both packs ship a skill named `teach`, with different jobs | Matt's `/teach` (learn a topic over sessions) keeps the name. pstack's one-shot explainer is used as `/pstack:teach`. |
 | Matt's `tdd` asks you to confirm test seams. pstack's `never-block-on-the-human` says don't ask | `tdd` takes seams from the ticket's Proof line. Inside `/poteto-mode` or an unattended run it picks seams and reports them instead of asking. |
 | Grilling skills exist to ask questions. poteto-mode tells the agent not to | poteto-mode and the principle now say an interview the user asked for is exempt. The rule governs the build that follows. |
 | `diagnosing-bugs` and `pr` are model-invoked, so they fired inside poteto-mode's Bug fix and Opening a PR playbooks | Their descriptions now step aside inside `/poteto-mode`. Opening a PR absorbed `pr`'s door call and Summary visual. |
@@ -51,11 +51,11 @@ From the repo's root:
 curl -fsSL https://raw.githubusercontent.com/moedesux/pocoteto-skills/main/setup.sh | bash
 ```
 
-That puts Matt's skills in `.claude/skills/`, turns on the pstack plugin in `.claude/settings.json`, and adds the pocoteto rules to `CLAUDE.md`. Commit those, so every clone and every cloud agent gets the same setup. Re-run it any time to update.
+That puts Matt's skills in `.claude/skills/`, turns on the pstack plugin in `.claude/settings.json`, and adds the pocoteto rules to `CLAUDE.md`. It also adds `.scratch/` to `.gitignore`, so the local tracker and process notes stay off feature branches. Commit those, so every clone gets the same setup. Headless and cloud agents don't act on the plugin settings and must install the plugin by command (step 1 below). Re-run it any time to update.
 
 Then open Claude Code in the repo:
 
-1. Accept the prompt to install the pstack plugin. If none appears: `/plugin marketplace add michael-denyer/pstack-claude`, then `/plugin install pstack@pstack-claude`.
+1. Accept the prompt to install the pstack plugin. If none appears: `/plugin marketplace add michael-denyer/pstack-claude`, then `/plugin install pstack@pstack-claude`. Headless or cloud agent: `claude plugin marketplace add michael-denyer/pstack-claude`, then `claude plugin install pstack@pstack-claude --scope project`.
 2. `/setup-matt-pocock-skills` (tracker, labels, glossary location)
 3. `/pstack:setup-pstack` (models per role)
 4. `/pstack:create-verification-skill` (a project `verify` skill the Proof checks use)
