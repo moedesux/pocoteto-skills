@@ -10,7 +10,8 @@
 #   .claude/settings.json    asks Claude Code to install the pstack-claude plugin for this repo
 #   CLAUDE.md                the pocoteto block, between pocoteto:start/end markers
 # Safe to re-run: it replaces its own block and backs up skill folders it overwrites.
-# Commit the results so every clone, teammate, and cloud agent gets the same setup.
+# Commit the results so every clone and teammate gets the same setup. Headless and cloud
+# sessions don't act on the plugin settings: they must run the `claude plugin` commands printed at the end.
 set -euo pipefail
 
 SOURCE_REPO="${POCOTETO_REPO:-https://github.com/moedesux/pocoteto-skills}"
@@ -69,15 +70,27 @@ open(path, "w").write(text)
 PY
 echo "Updated the pocoteto block in $claude_md"
 
+# 4. Keep the local tracker and other process files off feature branches.
+gitignore="$target/.gitignore"
+touch "$gitignore"
+if ! grep -qxF '.scratch/' "$gitignore"; then
+  [ -s "$gitignore" ] && [ -n "$(tail -c1 "$gitignore")" ] && echo >> "$gitignore"
+  echo '.scratch/' >> "$gitignore"
+  echo "Added .scratch/ to $gitignore"
+fi
+
 cat <<'EOF'
 
 Done. Next, open Claude Code in this repo and:
   1. Accept the prompt to install the pstack plugin. No prompt? Run:
        /plugin marketplace add michael-denyer/pstack-claude
        /plugin install pstack@pstack-claude
+     Headless or cloud agent (claude -p, CI)? It never sees the prompt. Run, in the repo:
+       claude plugin marketplace add michael-denyer/pstack-claude
+       claude plugin install pstack@pstack-claude --scope project
   2. /setup-matt-pocock-skills        (tracker, labels, glossary location)
   3. /pstack:setup-pstack             (models per role)
   4. /pstack:create-verification-skill (a verify skill the Proof checks use)
   5. /flow                            (which command to run next)
-Commit .claude/ and CLAUDE.md so every clone gets the same setup.
+Commit .claude/, CLAUDE.md and .gitignore so every clone gets the same setup.
 EOF
