@@ -72,6 +72,25 @@ if src.get("ref") != sys.argv[2]:
 PY
 fi
 
+# A user-scope pstack install loads instead of this repo's project-scope one, whatever the pin says.
+installed="$HOME/.claude/plugins/installed_plugins.json"
+if [ -f "$installed" ]; then
+  python3 - "$installed" "$PSTACK_REF" <<'PY2' || true
+import json, sys
+try:
+    entries = json.load(open(sys.argv[1]))["plugins"]["pstack@pstack-claude"]
+except (KeyError, TypeError, ValueError):
+    sys.exit(0)
+if isinstance(entries, dict):
+    entries = [entries]
+for e in entries if isinstance(entries, list) else []:
+    if isinstance(e, dict) and e.get("scope") == "user" and "v" + str(e.get("version", "")) != sys.argv[2]:
+        print(f"WARNING: pstack {e.get('version') or '(unknown version)'} is installed at user scope, and it loads instead of this repo's {sys.argv[2]}.")
+        print("  Remove it: claude plugin uninstall pstack@pstack-claude --scope user")
+        break
+PY2
+fi
+
 # pstack sets each subagent's effort on the Agent call, which older Claude Code rejects.
 if command -v claude >/dev/null 2>&1; then
   have="$(claude --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)"

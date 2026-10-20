@@ -26,6 +26,7 @@ You were asked to set up Matt Pocock's skills + pstack ("pocoteto") in a reposit
      claude plugin marketplace add michael-denyer/pstack-claude#v0.9.95 --scope project
      claude plugin install pstack@pstack-claude --scope project
      ```
+     If `setup.sh` warned that pstack is installed at user scope, that copy loads instead of the pinned one: run `claude plugin uninstall pstack@pstack-claude --scope user` first. Headless runs can't write under `.claude/`, so apply the patch `/pstack:create-verification-skill` leaves in `.scratch/verify-pending/` before building.
    - **Interactive session:** Claude Code does not offer to install it by itself, even with the settings in place. Tell the human to type `/plugin marketplace add michael-denyer/pstack-claude#v0.9.95`, then `/plugin install pstack@pstack-claude`, then `/reload-plugins`. Once per machine.
 
 Don't copy pstack skill folders into the repo. pstack comes only from the plugin, and loose copies load twice.
