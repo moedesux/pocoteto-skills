@@ -1,0 +1,53 @@
+From d9da529f1221738e119c9a28a0c59c183f9886f9 Mon Sep 17 00:00:00 2001
+From: pocoteto <pocoteto@localhost>
+Date: Tue, 20 Oct 2026 17:25:54 +0000
+Subject: [PATCH] flow: pstack 0.9.95 commands, autopilot-stack for dependent
+ tickets, formal checks beside the Proof
+
+---
+ skills/flow/SKILL.md | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/skills/flow/SKILL.md b/skills/flow/SKILL.md
+index 927b3f3..9845fff 100644
+--- a/skills/flow/SKILL.md
++++ b/skills/flow/SKILL.md
+@@ -11,24 +11,26 @@ Two packs, one pipeline. Matt's skills own **alignment**: what to build, in whos
+ 
+ Find where the user is in the table, answer with the next command to type, and stop. Don't start the work. **Unattended:** if no human is at the keyboard and you are the one who would type the command, run it yourself instead of stopping, then come back here for the next one. Before you describe a skill in detail, read its SKILL.md: this table is orientation only.
+ 
+-pstack is installed as the pstack-claude plugin, so its commands carry the plugin's prefix: `/poteto-mode` below is typed `/pstack:poteto-mode`, and the same for `/how`, `/why`, `/ketchup`, `/correct`, `/reflect`, `/setup-pstack`, `/create-verification-skill`, `/maintain-verification-skill` and `/benchmark-checklist`. Matt's commands have no prefix.
++pstack is installed as the pstack-claude plugin, so its commands carry the plugin's prefix: `/poteto-mode` below is typed `/pstack:poteto-mode`, and the same for `/how`, `/why`, `/ketchup`, `/correct`, `/reflect`, `/setup-pstack`, `/create-verification-skill`, `/maintain-verification-skill`, `/create-formal-verification-skill`, `/maintain-formal-verification-skill`, `/sharpen`, `/in-your-own-words` and `/benchmark-checklist`. Matt's commands have no prefix.
+ 
+ ## The main flow
+ 
+ | Stage | Command | Hands the next stage |
+ | --- | --- | --- |
+ | 0. Once per repo | `/setup-matt-pocock-skills`, `/setup-pstack`, `/create-verification-skill` | Tracker and doc locations, model roles, a project `verify` skill |
++| 0b. Optional, once per repo | `/create-formal-verification-skill` | A project skill, named for the area it covers, that model-checks or proves one property tests rarely reach (a race, an invariant). It sits beside a ticket's Proof, never in place of it |
+ | 1. Align | `/grill-with-docs` (or `/grill-me` for non-code) | Decisions in the conversation, `GLOSSARY.md` terms, ADRs |
+ | 1b. Too big for one session | `/wayfinder` | A map of decision tickets, resolved one at a time, then back to stage 2 |
+ | 1c. Can't settle it on paper | `/poteto-mode prototype <question>` | A decision plus a throwaway on a `prototype/<name>` branch |
+ | 2. Spec | `/to-spec` | A spec on the tracker |
+ | 3. Tickets | `/to-tickets` | A shape sketch, then vertical-slice tickets cut along its seams, each with blocking edges, a **Proof** line, and a **Touches** line |
+ | 4. Build one ticket | `/poteto-mode implement #<n>` | A verified diff, Proof evidence, small ordered commits, an open PR |
+-| 4b. Build the whole spec | `/implement-spec` (parallel, one integration branch) or `/poteto-mode autopilot-stack` | Same, across the task graph |
++| 4b. Build the whole spec | Tickets with blocking edges or a shared `Touches` seam: `/poteto-mode autopilot-stack` (each dependent ticket builds on its parent's branch) or `/implement-spec` (one integration branch). Independent tickets only: `/poteto-mode full autopilot` | Same, across the task graph |
+ | 5. Review | Runs inside stage 4: `code-review` (Spec and Standards axes), then `interrogate` (multi-model attack) | Findings fixed or dismissed with a reason |
+ | 6. Merge | `/poteto-mode babysit <pr>`, then `/poteto-mode ship the stack` | Merged PRs |
+ | 7. Learn | `/retro`, then the command it names: `/correct` (make the mistake impossible), `/reflect` (edit a skill), `/improve-codebase-architecture` | Checks in CI, `CODING_STANDARDS.md` rows, skill edits |
+ | 7b. Keep the verify skill current | After a merge that added or changed a user-facing feature: `/maintain-verification-skill` | A `verify` skill and feature map that cover what shipped, so the next Proof can use them |
++| 7c. Keep formal checks current | After a merge that touched code a formal verification skill covers: `/maintain-formal-verification-skill` | Each failure named as drift in the check or a bug in the code |
+ 
+ Use `/poteto-mode` for stage 4 when you want its playbooks, delegation, and PR flow. Use `/implement` when you want a lighter single-agent build in the current branch. Both now close out with the Proof check, `code-review`, and `interrogate`.
+ 
+@@ -57,5 +59,6 @@ The intent is already clear in these cases, so start at `/poteto-mode` directly.
+ ## Rules of thumb
+ 
+ - If you can't state the Proof for a change, you are still in alignment. Go back to stage 1.
++- Grilling is the alignment step. `/in-your-own-words` (play back the goal) and `/sharpen` (aim the task higher) are quick optional checks, not a substitute. On a ticket, `/sharpen` may tighten how the work is done, never drop or loosen a criterion or the Proof.
+ - Alignment asks questions. Execution doesn't. Grilling skills interview you by design. Inside `/poteto-mode`, the agent decides reversible calls and reports them.
+ - Name things with `GLOSSARY.md`. When the agent reports a missing term, that is the next `/grill-with-docs` topic.
+-- 
+2.43.0
+

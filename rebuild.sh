@@ -13,7 +13,7 @@
 # and update MATT_PIN with the commit it printed.
 set -euo pipefail
 
-MATT_PIN=49dd158      # mattpocock/skills
+MATT_PIN=5beb35b      # mattpocock/skills
 
 here="$(cd "$(dirname "$0")" && pwd)"
 latest=0
@@ -51,7 +51,7 @@ if [ "$latest" = 1 ]; then
   g checkout -q --detach upstream-pinned
   layout "$matt_new"
   g add -A
-  g commit -qm "upstream: mattpocock/skills $matt_new"
+  g commit -q --allow-empty -m "upstream: mattpocock/skills $matt_new"
   g tag upstream-latest
   g checkout -q patched
   echo "Rebasing patches onto matt $matt_new"

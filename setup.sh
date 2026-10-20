@@ -15,9 +15,11 @@
 set -euo pipefail
 
 SOURCE_REPO="${POCOTETO_REPO:-https://github.com/moedesux/pocoteto-skills}"
-# pstack is pinned to a release tag of the pstack-claude marketplace (v0.9.84 = commit 990cd7b).
+# pstack is pinned to a release tag of the pstack-claude marketplace (v0.9.95 = commit 88f6d39).
 # Bump it on purpose, after reviewing the upstream diff: see the README's Updating section.
-PSTACK_REF=v0.9.84
+PSTACK_REF=v0.9.95
+# pstack v0.9.95 passes reasoning effort on the subagent call, which needs this Claude Code or later.
+MIN_CLAUDE=2.1.292
 target="$(cd "${1:-.}" && pwd)"
 
 # Find the bundle: next to this script, or a fresh shallow clone when piped from curl.
@@ -68,6 +70,40 @@ if src.get("ref") != sys.argv[2]:
     print(f"WARNING: {sys.argv[1]} lists the pstack-claude marketplace at ref {src.get('ref') or 'HEAD'}, not {sys.argv[2]}.")
     print(f'  It overrides this repo\'s pin. Set "ref": "{sys.argv[2]}" in that entry\'s source, or delete the entry.')
 PY
+fi
+
+# A user-scope pstack install loads instead of this repo's project-scope one, whatever the pin says.
+installed="$HOME/.claude/plugins/installed_plugins.json"
+if [ -f "$installed" ]; then
+  python3 - "$installed" "$PSTACK_REF" <<'PY2' || true
+import json, sys
+try:
+    entries = json.load(open(sys.argv[1]))["plugins"]["pstack@pstack-claude"]
+except (KeyError, TypeError, ValueError):
+    sys.exit(0)
+if isinstance(entries, dict):
+    entries = [entries]
+for e in entries if isinstance(entries, list) else []:
+    if isinstance(e, dict) and e.get("scope") == "user" and "v" + str(e.get("version", "")) != sys.argv[2]:
+        print(f"WARNING: pstack {e.get('version') or '(unknown version)'} is installed at user scope, and it loads instead of this repo's {sys.argv[2]}.")
+        print("  Remove it: claude plugin uninstall pstack@pstack-claude --scope user")
+        break
+PY2
+fi
+
+# pstack sets each subagent's effort on the Agent call, which older Claude Code rejects.
+if command -v claude >/dev/null 2>&1; then
+  have="$(claude --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)"
+  if [ -n "$have" ] && [ "$(printf '%s\n%s\n' "$MIN_CLAUDE" "$have" | sort -V | head -1)" != "$MIN_CLAUDE" ]; then
+    echo "WARNING: Claude Code $have is older than $MIN_CLAUDE. pstack $PSTACK_REF needs $MIN_CLAUDE for per-subagent effort. Run: claude update"
+  fi
+fi
+
+# A model sheet written before pstack 0.9.88 still names opus for code-writing delegates.
+models="$HOME/.claude/pstack-models.md"
+if [ -f "$models" ] && grep -qxE 'feature, refactoring: *opus' "$models"; then
+  echo "NOTE: $models sets 'feature, refactoring: opus', the old default. pocoteto follows pstack's"
+  echo "  current default, sonnet. Change that line to 'feature, refactoring: sonnet', or keep opus on purpose."
 fi
 
 # 3. CLAUDE.md block (replaced in place on re-run).
