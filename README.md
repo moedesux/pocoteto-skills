@@ -94,6 +94,7 @@ Neither pack enforces these on its own. Each one stops the work until it passes.
 | Review | No independent reviewer available means one labelled self-review, `BLOCKED: independent review`, and never merge-ready. |
 | Design | In an interview the agent runs on itself, questions about code mechanism stay open for the build's design step (`architect` or arena) instead of being settled as assumptions. |
 | Ship | A user-facing feature adds its entry to the `verify` skill's feature map, and after a merge `/pstack:maintain-verification-skill` keeps the whole map current. |
+| Ship | In an unattended run, Claude Code won't write under `.claude/`. The verify changes are saved as a patch in `.scratch/verify-pending/`, the report starts with the command to apply it, and the gate stays pending until you do. |
 | Branch | Tickets in `.scratch/`, interview notes and the retro stay off the feature branch. |
 
 ## Upstream
