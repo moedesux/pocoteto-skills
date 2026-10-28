@@ -14,9 +14,9 @@ curl -fsSL https://raw.githubusercontent.com/moedesux/pocoteto-skills/main/setup
 
 That puts Matt's skills in `.claude/skills/`, declares the pinned pstack plugin in `.claude/settings.json`, and adds the pocoteto rules to `CLAUDE.md`. It also adds `.scratch/` to `.gitignore`, so the local tracker and process notes stay off feature branches. Commit those, so every clone gets the same setup. The settings don't install pstack by themselves, in interactive or headless sessions, so each machine installs it once by command (step 1 below). Re-run it any time to update.
 
-Then open Claude Code in the repo. It needs Claude Code 2.1.292 or later (`claude update`), because pstack v0.9.95 sets each subagent's effort on the call itself. `setup.sh` warns on an older version.
+Then open Claude Code in the repo. It needs Claude Code 2.1.292 or later (`claude update`), because pstack (since v0.9.95) sets each subagent's effort on the call itself. `setup.sh` warns on an older version.
 
-1. Install the pstack plugin, once per machine. Claude Code doesn't offer it by itself, even with the repo settings in place. Type `/plugin marketplace add michael-denyer/pstack-claude#v0.9.95`, then `/plugin install pstack@pstack-claude`, then `/reload-plugins`. Headless or cloud agent: `claude plugin marketplace add michael-denyer/pstack-claude#v0.9.95 --scope project`, then `claude plugin install pstack@pstack-claude --scope project`. A user-scope pstack install wins over the project one, so remove it first (`claude plugin uninstall pstack@pstack-claude --scope user`); `setup.sh` warns when it finds one. Headless runs can't write under `.claude/`, so `/pstack:create-verification-skill` leaves the new skill in `.scratch/verify-pending/verify/` with the command to apply it; apply it before the first build.
+1. Install the pstack plugin, once per machine. Claude Code doesn't offer it by itself, even with the repo settings in place. Type `/plugin marketplace add michael-denyer/pstack-claude#v0.9.102`, then `/plugin install pstack@pstack-claude`, then `/reload-plugins`. Headless or cloud agent: `claude plugin marketplace add michael-denyer/pstack-claude#v0.9.102 --scope project`, then `claude plugin install pstack@pstack-claude --scope project`. A user-scope pstack install wins over the project one, so remove it first (`claude plugin uninstall pstack@pstack-claude --scope user`); `setup.sh` warns when it finds one. Headless runs can't write under `.claude/`, so `/pstack:create-verification-skill` leaves the new skill in `.scratch/verify-pending/verify/` with the command to apply it; apply it before the first build.
 2. `/setup-matt-pocock-skills` (tracker, labels, glossary location)
 3. `/pstack:setup-pstack` (models per role)
 4. `/pstack:create-verification-skill` (a project `verify` skill the Proof checks use). `/pstack:setup-pstack` also offers `/pstack:create-formal-verification-skill`, which proves one property tests rarely reach; it's optional.
@@ -103,7 +103,7 @@ Neither pack enforces these on its own. Each one stops the work until it passes.
 | Pack | Source | How |
 | --- | --- | --- |
 | Matt Pocock skills | `github.com/mattpocock/skills` (engineering + productivity), pinned `5beb35b` | Files in `skills/`, rebuilt by `rebuild.sh` from `patches/` |
-| pstack | `michael-denyer/pstack-claude` plugin (community Claude Code port), pinned to release tag `v0.9.95` (commit `88f6d39`) | Installed as a plugin from the marketplace at that tag (`PSTACK_REF` in `setup.sh`). Not in this bundle. |
+| pstack | `michael-denyer/pstack-claude` plugin (community Claude Code port), pinned to release tag `v0.9.102` (commit `356c6e0`) | Installed as a plugin from the marketplace at that tag (`PSTACK_REF` in `setup.sh`). Not in this bundle. |
 
 Neither pack follows upstream HEAD. Updates come in only when someone bumps a pin after reading the upstream diff (see Updating).
 
@@ -152,11 +152,11 @@ The pin (`MATT_PIN`) is at the top of `rebuild.sh`. `--latest` rebases with a th
 
 pstack is pinned by `PSTACK_REF` in `setup.sh`, a release tag of `michael-denyer/pstack-claude`. `setup.sh` writes it into each repo's `.claude/settings.json` as the marketplace `ref`, and `claude plugin marketplace update` stays on that tag. To move to a newer release:
 
-1. Read what changed: `git clone https://github.com/michael-denyer/pstack-claude && cd pstack-claude && git diff v0.9.95 <new-tag> -- plugins/pstack`, plus `CHANGES.md`. Check it against the rules in `AGENTS-snippet.md` and the pstack skill names `/flow` and the patches refer to.
+1. Read what changed: `git clone https://github.com/michael-denyer/pstack-claude && cd pstack-claude && git diff v0.9.102 <new-tag> -- plugins/pstack`, plus `CHANGES.md`. Check it against the rules in `AGENTS-snippet.md` and the pstack skill names `/flow` and the patches refer to.
 2. Set `PSTACK_REF` to the new tag, update the tag and commit in the Upstream table above, and open a PR here.
 3. After it merges, re-run `setup.sh` in each repo and commit the changed `.claude/settings.json`. On a machine that already has the marketplace, run `claude plugin marketplace update pstack-claude` and `claude plugin update pstack@pstack-claude`.
 
-If you added the `pstack-claude` marketplace by hand before it was pinned, it follows HEAD. Remove it (`claude plugin marketplace remove pstack-claude`) and add it again with `#v0.9.95`. If your user settings (`~/.claude/settings.json`) list `pstack-claude` under `extraKnownMarketplaces` without a `ref`, that entry wins: `marketplace add …#v0.9.95` is refused and installs take the latest release. Add `"ref": "v0.9.95"` to that entry's `source`, or delete the entry. `setup.sh` warns when it finds one.
+If you added the `pstack-claude` marketplace by hand before it was pinned, it follows HEAD. Remove it (`claude plugin marketplace remove pstack-claude`) and add it again with `#v0.9.102`. If your user settings (`~/.claude/settings.json`) list `pstack-claude` under `extraKnownMarketplaces` without a `ref`, that entry wins: `marketplace add …#v0.9.102` is refused and installs take the latest release. Add `"ref": "v0.9.95"` to that entry's `source`, or delete the entry. `setup.sh` warns when it finds one.
 
 Matt's skills are bumped the same deliberate way: `./rebuild.sh --latest ./build` shows whether the patches still apply on the newest upstream; read the upstream diff (`git diff 5beb35b <new>` in `mattpocock/skills`) before you change `MATT_PIN`.
 
