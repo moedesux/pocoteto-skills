@@ -1,7 +1,7 @@
-From 8c3388ed80db6ebd6843f64e0c0d97f984ce79c2 Mon Sep 17 00:00:00 2001
+From df516d43f2a1966776bb39ee587079a20858c77a Mon Sep 17 00:00:00 2001
 From: pocoteto <p@x>
 Date: Wed, 14 Oct 2026 03:59:00 +0200
-Subject: [PATCH 02/12] tdd: take seams from ticket Proof lines, don't block
+Subject: [PATCH 01/12] tdd: take seams from ticket Proof lines, don't block
  inside poteto-mode; absorb pstack tdd's impractical-test escape and evidence
  report
 

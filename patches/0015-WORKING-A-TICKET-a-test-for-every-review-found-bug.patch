@@ -1,8 +1,8 @@
-From 017e21173dae3d8e22d8b99b9fee9fc68077767b Mon Sep 17 00:00:00 2001
+From 6dc8fa48d3df4b9ded4a21cac07e023783ed58e5 Mon Sep 17 00:00:00 2001
 From: pocoteto <pocoteto@localhost>
 Date: Thu, 15 Oct 2026 19:01:46 +0000
-Subject: [PATCH] WORKING-A-TICKET: a test for every review-found bug, new
- features go into the verify feature map; /flow routes to
+Subject: [PATCH 10/12] WORKING-A-TICKET: a test for every review-found bug,
+ new features go into the verify feature map; /flow routes to
  maintain-verification-skill after a feature merges
 
 ---

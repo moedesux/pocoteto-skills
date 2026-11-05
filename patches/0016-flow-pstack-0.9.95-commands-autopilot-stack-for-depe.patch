@@ -1,8 +1,8 @@
-From d9da529f1221738e119c9a28a0c59c183f9886f9 Mon Sep 17 00:00:00 2001
+From 82d49d784fdbf4293fd332e1bec895b6f3948fe0 Mon Sep 17 00:00:00 2001
 From: pocoteto <pocoteto@localhost>
 Date: Tue, 20 Oct 2026 17:25:54 +0000
-Subject: [PATCH] flow: pstack 0.9.95 commands, autopilot-stack for dependent
- tickets, formal checks beside the Proof
+Subject: [PATCH 11/12] flow: pstack 0.9.95 commands, autopilot-stack for
+ dependent tickets, formal checks beside the Proof
 
 ---
  skills/flow/SKILL.md | 7 +++++--
