@@ -1,9 +1,9 @@
-From c81d12fbe93553c6b955031da99b6e3ecab3f643 Mon Sep 17 00:00:00 2001
+From 3b2f2f2b101327aa62c27ece4dbc242e90d32cce Mon Sep 17 00:00:00 2001
 From: pocoteto <pocoteto@localhost>
 Date: Thu, 15 Oct 2026 18:16:13 +0000
-Subject: [PATCH] to-tickets: dry-run every Proof, timing Proof for regex over
- user input, escaping rides with the first ticket that emits output; /flow
- runs the next command itself when unattended
+Subject: [PATCH 09/12] to-tickets: dry-run every Proof, timing Proof for regex
+ over user input, escaping rides with the first ticket that emits output;
+ /flow runs the next command itself when unattended
 
 ---
  skills/flow/SKILL.md       | 2 +-

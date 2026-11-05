@@ -13,7 +13,7 @@
 # and update MATT_PIN with the commit it printed.
 set -euo pipefail
 
-MATT_PIN=5beb35b      # mattpocock/skills
+MATT_PIN=4ae2317      # mattpocock/skills
 
 here="$(cd "$(dirname "$0")" && pwd)"
 latest=0

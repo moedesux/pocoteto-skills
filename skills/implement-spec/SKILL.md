@@ -12,6 +12,8 @@ The goal is the entire spec implemented on a single **integration branch**, with
 
 The tickets are not a list of steps. They are a **task graph** with blocking relationships between them. This means there is always a **frontier** of tickets which are ready to be grabbed.
 
+Start every subagent with a fresh context window.
+
 Two tickets whose **Touches** lines name the same seam also block each other: the lower-numbered one goes first. Every implementer follows the `to-tickets` skill's [WORKING-A-TICKET.md](../to-tickets/WORKING-A-TICKET.md).
 
 Communication to and from subagents should be sparse. Communicate primarily through **context pointers**: to the spec, tickets, research notes, and previous commits. Don't duplicate information already available via pointers.
@@ -26,7 +28,7 @@ Communication to and from subagents should be sparse. Communicate primarily thro
 
 3. Create the integration branch. If the issue tracker closes work through PRs, or the user asks for one, open a draft PR after the first merge in step 5 (a branch with no commits ahead of main can't open one), marked as closing the spec and tickets.
 
-4. Use **implementer subagents** to implement each ticket, each in its own worktree on its own branch. Each implementer subagent:
+4. Use a fresh **implementer subagent** for each ticket, each in its own worktree on its own branch. Each implementer subagent:
    - confirms its worktree is based on the integration branch before starting, and resets onto it if not;
    - runs the WORKING-A-TICKET.md gate first, against the integration branch tip. A ticket whose Proof already passes becomes verify-only;
    - calls the Skill tool with `tdd` to build only the criteria its ticket owns;
@@ -40,9 +42,9 @@ Communication to and from subagents should be sparse. Communicate primarily thro
 
 7. Once all tickets are complete, review the integration branch two ways, in parallel:
    - call the Skill tool with `code-review` (Standards and Spec axes);
-   - read the `interrogate` skill's SKILL.md and follow it over the same diff (it is user-invoked, so open its file rather than calling the Skill tool; pstack is a plugin here, so the file lives in the plugin's folder: `find ~/.claude/plugins -path '*/skills/interrogate/SKILL.md'`). Use the spec as the intent in its Step 2.
+   - read the `interrogate` skill's SKILL.md and follow it over the same diff (it is user-invoked, so open its file rather than calling the Skill tool; pstack is a plugin here, so the file lives in the plugin's folder: `find ~/.claude/plugins -path '*/skills/interrogate/SKILL.md'`). Use the spec as the intent when it frames the change, instead of asking the user.
 
-   Fix the findings you agree with in a single **implementer subagent**, and dismiss the rest with a one-line reason each. Then re-run every ticket's Proof against the integration branch tip, since merges can break a ticket that passed in its own worktree.
+   Fix the findings you agree with in a single fresh **implementer subagent**, and dismiss the rest with a one-line reason each. Then re-run every ticket's Proof against the integration branch tip, since merges can break a ticket that passed in its own worktree.
 
 8. If a draft PR exists, mark it ready for review. Otherwise, resolve each ticket the way the issue tracker closes work, and report the integration branch.
 

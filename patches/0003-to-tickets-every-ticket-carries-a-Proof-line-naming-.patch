@@ -1,7 +1,7 @@
-From e5ad0752461f3df489b21079f914205c7549594e Mon Sep 17 00:00:00 2001
+From b638a42a89453135c6ded09e4854c3740e3b8abc Mon Sep 17 00:00:00 2001
 From: pocoteto <p@x>
 Date: Wed, 14 Oct 2026 03:59:08 +0200
-Subject: [PATCH 03/12] to-tickets: every ticket carries a Proof line naming
+Subject: [PATCH 02/12] to-tickets: every ticket carries a Proof line naming
  the real surface and observable result
 
 ---

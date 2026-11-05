@@ -1,7 +1,7 @@
-From 711bf383691746220c16ab3d80f2146bfb7f1238 Mon Sep 17 00:00:00 2001
+From 326fa2846c6c37ee27f56e10f3e2fefbc2c98aba Mon Sep 17 00:00:00 2001
 From: pocoteto <p@x>
 Date: Wed, 14 Oct 2026 04:01:03 +0200
-Subject: [PATCH 08/12] Add /flow router across both packs; triage briefs carry
+Subject: [PATCH 05/12] Add /flow router across both packs; triage briefs carry
  a Proof line
 
 ---

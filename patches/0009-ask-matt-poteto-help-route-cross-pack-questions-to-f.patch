@@ -1,11 +1,11 @@
-From f8fc1dbb589722ac3d61264097ac50a3e1a9ae1a Mon Sep 17 00:00:00 2001
+From 7fc8b42365b5144dc88564ed0293d9805a856f50 Mon Sep 17 00:00:00 2001
 From: pocoteto <p@x>
 Date: Wed, 14 Oct 2026 04:01:08 +0200
-Subject: [PATCH 09/12] ask-matt, poteto-help: route cross-pack questions to
+Subject: [PATCH 06/12] ask-matt, poteto-help: route cross-pack questions to
  /flow
 
 ---
- skills/ask-matt/SKILL.md    | 2 ++
+ skills/ask-matt/SKILL.md | 2 ++
  1 file changed, 2 insertions(+)
 
 diff --git a/skills/ask-matt/SKILL.md b/skills/ask-matt/SKILL.md
@@ -23,3 +23,4 @@ index 4bfeeb6..d617be6 100644
  A **flow** is a path through the skills. Most paths run along one **main flow**, and two **on-ramps** merge onto it. Everything else is standalone, or a vocabulary layer that runs underneath.
 -- 
 2.43.0
+

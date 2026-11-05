@@ -1,7 +1,7 @@
-From 880a1df9851386f908262b1c763f6da6e123cc7b Mon Sep 17 00:00:00 2001
+From 5eb95722b43fd80f91c5a8e58bce9a806da84301 Mon Sep 17 00:00:00 2001
 From: pocoteto <p@x>
 Date: Wed, 14 Oct 2026 04:00:18 +0200
-Subject: [PATCH 06/12] Fence model-invoked overlaps (diagnosing-bugs, pr) away
+Subject: [PATCH 04/12] Fence model-invoked overlaps (diagnosing-bugs, pr) away
  from poteto-mode playbooks; retro hands findings to /correct, /reflect,
  architecture and glossary skills
 

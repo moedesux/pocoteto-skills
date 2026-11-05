@@ -1,7 +1,7 @@
-From 949d8482aad56370f2d7a10a48e85c55dfaf36c2 Mon Sep 17 00:00:00 2001
+From c525f78f77df7e40554cc2069650071d5bd09900 Mon Sep 17 00:00:00 2001
 From: pocoteto <p@x>
 Date: Wed, 14 Oct 2026 12:45:26 +0200
-Subject: [PATCH 12/12] Ticket rules: shape sketch and Touches in to-tickets;
+Subject: [PATCH 07/12] Ticket rules: shape sketch and Touches in to-tickets;
  WORKING-A-TICKET gate, ownership, spec-first new behaviour, contradiction
  stop, regression re-run, shared-seam serialization in implement and
  implement-spec
@@ -29,21 +29,21 @@ index 96e23a6..bd19d6a 100644
  | 4b. Build the whole spec | `/implement-spec` (parallel, one integration branch) or `/poteto-mode autopilot-stack` | Same, across the task graph |
  | 5. Review | Runs inside stage 4: `code-review` (Spec and Standards axes), then `interrogate` (multi-model attack) | Findings fixed or dismissed with a reason |
 diff --git a/skills/implement-spec/SKILL.md b/skills/implement-spec/SKILL.md
-index f93d965..a75ff95 100644
+index 53ccac3..ce373c7 100644
 --- a/skills/implement-spec/SKILL.md
 +++ b/skills/implement-spec/SKILL.md
-@@ -12,6 +12,8 @@ The goal is the entire spec implemented on a single **integration branch**, with
+@@ -14,6 +14,8 @@ The tickets are not a list of steps. They are a **task graph** with blocking rel
  
- The tickets are not a list of steps. They are a **task graph** with blocking relationships between them. This means there is always a **frontier** of tickets which are ready to be grabbed.
+ Start every subagent with a fresh context window.
  
 +Two tickets whose **Touches** lines name the same seam also block each other: the lower-numbered one goes first. Every implementer follows the `to-tickets` skill's [WORKING-A-TICKET.md](../to-tickets/WORKING-A-TICKET.md).
 +
  Communication to and from subagents should be sparse. Communicate primarily through **context pointers**: to the spec, tickets, research notes, and previous commits. Don't duplicate information already available via pointers.
  
  **Implementer subagents** should be run in the background where possible for maximum concurrency.
-@@ -26,9 +28,11 @@ Communication to and from subagents should be sparse. Communicate primarily thro
+@@ -28,9 +30,11 @@ Communication to and from subagents should be sparse. Communicate primarily thro
  
- 4. Use **implementer subagents** to implement each ticket, each in its own worktree on its own branch. Each implementer subagent:
+ 4. Use a fresh **implementer subagent** for each ticket, each in its own worktree on its own branch. Each implementer subagent:
     - confirms its worktree is based on the integration branch before starting, and resets onto it if not;
 -   - calls the Skill tool with `tdd` to build the ticket;
 +   - runs the WORKING-A-TICKET.md gate first, against the integration branch tip. A ticket whose Proof already passes becomes verify-only;
