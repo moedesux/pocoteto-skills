@@ -38,7 +38,7 @@ flowchart TD
   S1["<b>1. Design</b><br/>/grill-with-docs<br/><i>you answer the interview</i>"]
   S2["<b>2. Spec</b><br/>/to-spec<br/><i>you read and correct it</i>"]
   S3["<b>3. Tickets</b><br/>/to-tickets<br/><i>you approve the breakdown</i>"]
-  S4["<b>4. Build, verify, review, open the PR</b><br/>/pstack:poteto-mode implement N<br/>or /implement-spec for every ticket at once"]
+  S4["<b>4. Build, verify, review, open the PR</b><br/>/pstack:poteto-mode implement N<br/>or /implement-spec for the whole spec"]
   S5["<b>5. Get it green</b><br/>/pstack:poteto-mode babysit PR"]
   S6["<b>6. Merge</b><br/>/pstack:poteto-mode ship the stack"]
   L["<b>Afterwards, optional</b><br/>/retro after the merge<br/><i>name every session of the run</i>"]
@@ -68,8 +68,8 @@ flowchart TD
 | 1 | `/grill-with-docs`, then describe the feature | Answer until every decision is made | `GLOSSARY.md` terms, ADRs |
 | 2 | `/to-spec` | Read it, correct it | The spec, filed on the tracker |
 | 3 | `/to-tickets` | Approve the breakdown | A shape sketch, then tickets with a **Proof** and a **Touches** line each |
-| 4 | `/pstack:poteto-mode implement #<n>` (one ticket), or `/implement-spec` (all of them) | Read what it reports | Build, Proof on the real surface, code review, multi-model review, small commits, PR |
-| 5 | `/pstack:poteto-mode babysit <pr>` | Leave it running | Conflicts, review comments, failing CI |
+| 4 | `/pstack:poteto-mode implement #<n>` (one ticket), or `/implement-spec` (the whole spec: tickets whose blockers are done build in parallel, the rest wait their turn, all merged into one integration branch) | Read what it reports | Build, Proof on the real surface, code review, multi-model review, small commits, PR (`/implement-spec` opens one draft PR, and only if your tracker closes work through PRs) |
+| 5 | `/pstack:poteto-mode babysit <pr>` | Leave it running | Review comments and failing CI. It reports a merge conflict, naming the branch to rebase, rather than resolving it |
 | 6 | `/pstack:poteto-mode ship the stack`, or merge yourself | Typing it is your go-ahead | Re-check each PR, merge bottom-up, then update the `verify` skill if a feature shipped |
 
 **When to clear the session.** Keep it when the next command needs what you just said, and clear it (`/clear`) when the next command starts from something written down, like a ticket or a PR. So run steps 1 to 3 in one session, because the spec and tickets are written from the interview. Clear before step 4, because the build reads the tickets from the tracker, and again between tickets when you build one at a time. A whole-spec build needs only the one clear. Clear before step 5, which works from the PRs. Step 6 can follow in the same session. After the merge, `/retro` can look back over the run. Name every session of it, the build sessions too, because it only reads the current one otherwise.
