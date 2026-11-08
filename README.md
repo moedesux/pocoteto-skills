@@ -72,7 +72,7 @@ flowchart TD
 | 5 | `/pstack:poteto-mode babysit <pr>` | Leave it running | Conflicts, review comments, failing CI |
 | 6 | `/pstack:poteto-mode ship the stack`, or merge yourself | Typing it is your go-ahead | Re-check each PR, merge bottom-up, then update the `verify` skill if a feature shipped |
 
-Run steps 1 to 3 in one session, and start a fresh one for step 4. With one ticket at a time, repeat step 4 for each ticket. After the merge, `/retro` can look back over the run. Name every session of it, the build sessions too, because it only reads the current one otherwise.
+**When to clear the session.** Keep it when the next command needs what you just said, and clear it (`/clear`) when the next command starts from something written down, like a ticket or a PR. So run steps 1 to 3 in one session, because the spec and tickets are written from the interview. Clear before step 4 and between tickets, because the build reads the ticket from the tracker. Clear before step 5, which works from the PRs. Step 6 can follow in the same session. After the merge, `/retro` can look back over the run. Name every session of it, the build sessions too, because it only reads the current one otherwise.
 
 **When to type `/flow`.** The six commands above don't need it. Type `/flow` when you're not sure where you are, or when you start from something else: a bug, a slow path, an incoming issue, someone else's branch. It answers with the next command. In an unattended run it runs that command itself. The rules that matter after a merge don't depend on `/flow`: they are in the `CLAUDE.md` block, which every session reads.
 

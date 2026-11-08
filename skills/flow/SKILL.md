@@ -52,6 +52,7 @@ The intent is already clear in these cases, so start at `/poteto-mode` directly.
 
 ## Sessions
 
+- When to clear (`/clear`): keep the session when the next command needs what was just said, and clear it when the next command starts from something written down, like a ticket or a PR. So stages 1 to 3 share one session (the spec and tickets are written from the interview). Clear before stage 4 and between tickets, since the build reads the ticket from the tracker. Clear before `babysit`, which works from the PRs; `ship the stack` can follow in the same session. `/retro` runs in any session after the merge, naming the run's earlier sessions.
 - Stop now, resume later in a fresh agent: `/handoff` writes the document. Inside poteto-mode, say "pause safely" and its Pause playbook leaves the branch resumable.
 - Pick up someone else's work: `/poteto-mode pick up <branch or transcript>`.
 - Catch up on a long chat: `/ketchup`.
