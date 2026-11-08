@@ -28,7 +28,7 @@ pstack is installed as the pstack-claude plugin, so its commands carry the plugi
 | 4b. Build the whole spec | Tickets with blocking edges or a shared `Touches` seam: `/poteto-mode autopilot-stack` (each dependent ticket builds on its parent's branch) or `/implement-spec` (one integration branch). Independent tickets only: `/poteto-mode full autopilot` | Same, across the task graph |
 | 5. Review | Runs inside stage 4: `code-review` (Spec and Standards axes), then `interrogate` (multi-model attack) | Findings fixed or dismissed with a reason |
 | 6. Merge | `/poteto-mode babysit <pr>`, then `/poteto-mode ship the stack` | Merged PRs |
-| 7. Learn | `/retro`, then the command it names: `/correct` (make the mistake impossible), `/reflect` (edit a skill), `/improve-codebase-architecture` | Checks in CI, `CODING_STANDARDS.md` rows, skill edits |
+| 7. Learn | After the merge, `/retro` naming every session of the run (the build sessions too, since the session is cleared between tickets), then the command it names: `/correct` (make the mistake impossible), `/reflect` (edit a skill), `/improve-codebase-architecture` | Checks in CI, `CODING_STANDARDS.md` rows, skill edits |
 | 7b. Keep the verify skill current | After a merge that added or changed a user-facing feature: `/maintain-verification-skill` | A `verify` skill and feature map that cover what shipped, so the next Proof can use them |
 | 7c. Keep formal checks current | After a merge that touched code a formal verification skill covers: `/maintain-formal-verification-skill` | Each failure named as drift in the check or a bug in the code |
 
@@ -52,6 +52,7 @@ The intent is already clear in these cases, so start at `/poteto-mode` directly.
 
 ## Sessions
 
+- When to clear (`/clear`): keep the session when the next command needs what was just said, and clear it when the next command starts from something written down, like a ticket or a PR. So stages 1 to 3 share one session (the spec and tickets are written from the interview). Clear before stage 4, since the build reads the tickets from the tracker, and again between tickets when you build one at a time (a whole-spec build needs only the one clear). Clear before `babysit`, which works from the PRs; `ship the stack` can follow in the same session. `/retro` runs in any session after the merge, naming the run's earlier sessions.
 - Stop now, resume later in a fresh agent: `/handoff` writes the document. Inside poteto-mode, say "pause safely" and its Pause playbook leaves the branch resumable.
 - Pick up someone else's work: `/poteto-mode pick up <branch or transcript>`.
 - Catch up on a long chat: `/ketchup`.
