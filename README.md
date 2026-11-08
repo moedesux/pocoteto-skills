@@ -41,7 +41,7 @@ flowchart TD
   S4["<b>4. Build, verify, review, open the PR</b><br/>/pstack:poteto-mode implement N<br/>or /implement-spec for every ticket at once"]
   S5["<b>5. Get it green</b><br/>/pstack:poteto-mode babysit PR"]
   S6["<b>6. Merge</b><br/>/pstack:poteto-mode ship the stack"]
-  L["<b>Afterwards, optional</b><br/>/retro"]
+  L["<b>Afterwards, optional</b><br/>/retro after the merge<br/><i>name every session of the run</i>"]
 
   S0 --> S1 --> S2 --> S3
   S3 -- "fresh session" --> S4 --> S5 --> S6 --> L
@@ -72,7 +72,7 @@ flowchart TD
 | 5 | `/pstack:poteto-mode babysit <pr>` | Leave it running | Conflicts, review comments, failing CI |
 | 6 | `/pstack:poteto-mode ship the stack`, or merge yourself | Typing it is your go-ahead | Re-check each PR, merge bottom-up, then update the `verify` skill if a feature shipped |
 
-Run steps 1 to 3 in one session, and start a fresh one for step 4. With one ticket at a time, repeat step 4 for each ticket.
+Run steps 1 to 3 in one session, and start a fresh one for step 4. With one ticket at a time, repeat step 4 for each ticket. After the merge, `/retro` can look back over the run. Name every session of it, the build sessions too, because it only reads the current one otherwise.
 
 **When to type `/flow`.** The six commands above don't need it. Type `/flow` when you're not sure where you are, or when you start from something else: a bug, a slow path, an incoming issue, someone else's branch. It answers with the next command. In an unattended run it runs that command itself. The rules that matter after a merge don't depend on `/flow`: they are in the `CLAUDE.md` block, which every session reads.
 

@@ -28,7 +28,7 @@ pstack is installed as the pstack-claude plugin, so its commands carry the plugi
 | 4b. Build the whole spec | Tickets with blocking edges or a shared `Touches` seam: `/poteto-mode autopilot-stack` (each dependent ticket builds on its parent's branch) or `/implement-spec` (one integration branch). Independent tickets only: `/poteto-mode full autopilot` | Same, across the task graph |
 | 5. Review | Runs inside stage 4: `code-review` (Spec and Standards axes), then `interrogate` (multi-model attack) | Findings fixed or dismissed with a reason |
 | 6. Merge | `/poteto-mode babysit <pr>`, then `/poteto-mode ship the stack` | Merged PRs |
-| 7. Learn | `/retro`, then the command it names: `/correct` (make the mistake impossible), `/reflect` (edit a skill), `/improve-codebase-architecture` | Checks in CI, `CODING_STANDARDS.md` rows, skill edits |
+| 7. Learn | After the merge, `/retro` naming every session of the run (the build sessions too, since the session is cleared between tickets), then the command it names: `/correct` (make the mistake impossible), `/reflect` (edit a skill), `/improve-codebase-architecture` | Checks in CI, `CODING_STANDARDS.md` rows, skill edits |
 | 7b. Keep the verify skill current | After a merge that added or changed a user-facing feature: `/maintain-verification-skill` | A `verify` skill and feature map that cover what shipped, so the next Proof can use them |
 | 7c. Keep formal checks current | After a merge that touched code a formal verification skill covers: `/maintain-formal-verification-skill` | Each failure named as drift in the check or a bug in the code |
 
