@@ -15,9 +15,9 @@
 set -euo pipefail
 
 SOURCE_REPO="${POCOTETO_REPO:-https://github.com/moedesux/pocoteto-skills}"
-# pstack is pinned to a release tag of the pstack-claude marketplace (v0.9.117 = commit 8ecae68).
+# pstack is pinned to a release tag of the pstack-claude marketplace (v0.9.133 = commit 8074b9f).
 # Bump it on purpose, after reviewing the upstream diff: see the README's Updating section.
-PSTACK_REF=v0.9.117
+PSTACK_REF=v0.9.133
 # pstack (since v0.9.95) passes reasoning effort on the subagent call, which needs this Claude Code or later.
 MIN_CLAUDE=2.1.292
 target="$(cd "${1:-.}" && pwd)"
