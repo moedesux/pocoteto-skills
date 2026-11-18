@@ -15,9 +15,9 @@
 set -euo pipefail
 
 SOURCE_REPO="${POCOTETO_REPO:-https://github.com/moedesux/pocoteto-skills}"
-# pstack is pinned to a release tag of the pstack-claude marketplace (v0.9.133 = commit 8074b9f).
+# pstack is pinned to a release tag of the pstack-claude marketplace (v0.9.138 = commit 2044f18).
 # Bump it on purpose, after reviewing the upstream diff: see the README's Updating section.
-PSTACK_REF=v0.9.133
+PSTACK_REF=v0.9.138
 # pstack (since v0.9.95) passes reasoning effort on the subagent call, which needs this Claude Code or later.
 MIN_CLAUDE=2.1.292
 target="$(cd "${1:-.}" && pwd)"
@@ -100,7 +100,9 @@ if command -v claude >/dev/null 2>&1; then
 fi
 
 # A model sheet written before pstack 0.9.88 still names opus for code-writing delegates.
-models="$HOME/.claude/pstack-models.md"
+# A project sheet (.claude/pstack-models.md in the repo) replaces the user sheet in that repo.
+models="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/pstack-models.md"
+[ -f "$target/.claude/pstack-models.md" ] && models="$target/.claude/pstack-models.md"
 if [ -f "$models" ] && grep -qxE 'feature, refactoring: *opus' "$models"; then
   echo "NOTE: $models sets 'feature, refactoring: opus', the old default. pocoteto follows pstack's"
   echo "  current default, sonnet. Change that line to 'feature, refactoring: sonnet', or keep opus on purpose."
